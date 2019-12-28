@@ -1,0 +1,195 @@
+%----------------------------------------------------------------------------------------
+%	HEADER
+%----------------------------------------------------------------------------------------
+
+\documentclass[12pt, a4paper, oneside]{article}
+
+\usepackage[english]{babel} % Language hyphenation and typographical rules
+
+\usepackage[top=3cm, left=3cm, right=2cm, bottom=2.5cm]{geometry} % Document margins
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{booktabs} % Horizontal rules in tables
+
+\usepackage{lettrine} % The lettrine is the first enlarged letter at the beginning of the text
+
+\usepackage{enumitem} % Customized lists
+\setlist[itemize]{noitemsep} % Make itemize lists more compact
+
+% TODO do we need a abstract?
+\usepackage{abstract} % Allows abstract customization
+\renewcommand{\abstractnamefont}{\normalfont\bfseries} % Set the "Abstract" text to bold
+\renewcommand{\abstracttextfont}{\normalfont\small\itshape} % Set the abstract itself to small italic text
+
+\usepackage{titlesec} % Allows customization of titles
+%\renewcommand\thesection{\Roman{section}} % Roman numerals for the sections
+\renewcommand\thesubsection{\roman{subsection}} % roman numerals for subsections
+\titleformat{\section}[block]{\large\scshape\centering}{\thesection.}{1em}{} % Change the look of the section titles
+\titleformat{\subsection}[block]{\large}{\thesubsection.}{1em}{} % Change the look of the section titles
+
+\usepackage{fancyhdr} % Headers and footers
+\pagestyle{fancy} % All pages have headers and footers
+\fancyhead{} % Blank out the default header
+\fancyfoot{} % Blank out the default footer
+\fancyhead[C]{Water Management $\bullet$ Seminar Computational Economics $\bullet$ Winter Semester 2019/2020} % Custom header text
+\fancyfoot[RO,LE]{\thepage} % Custom footer text
+
+\usepackage{titling} % Customizing the title section
+
+\usepackage{hyperref} % For hyperlinks in the PDF
+
+% TODO delete the lorem ipsum
+\usepackage{blindtext} % Package to generate dummy text throughout this template 
+
+\title{Water Management}
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+	
+	%----------------------------------------------------------------------------------------
+	%	COVER SHEET
+	%----------------------------------------------------------------------------------------
+	
+	\begin{titlepage}
+		\begin{center}
+			\vspace*{1cm}
+			
+			\textbf{Seminar \textit{Computational Economics}}                
+			
+			\vspace{0.5cm}
+			{\makeatletter{\@title}\makeatother}
+			
+			\vspace{1.5cm}
+			
+			\textbf{Felix Fink} \\
+			stud. 2nd semester M.Sc. Mechanical Engineering \\
+			Matr. Nr. 345971 \\
+			\href{mailto:felix.fink@rwth-aachen.de}{felix.fink@rwth-aachen.de} 
+			
+			\vspace{1cm}
+			
+			% TODO input personal details
+			\textbf{Niklas Sayer} \\
+			\href{mailto:niklas.sayer@rwth-aachen.de}{niklas.sayer@rwth-aachen.de} 
+			
+			\vspace{1cm}
+			
+			% TODO input personal details
+			\textbf{Martin Wicke} \\
+			\href{mailto:martin.wicke@rwth-aachen.de}{martin.wicke:@rwth-aachen.de} 
+			
+			\vfill
+			
+			
+			Supervisor\\
+			Thomas Gehrmann, M.Sc.
+			
+			\vspace{0.8cm}
+			
+			%\includegraphics[width=0.4\textwidth]{university}
+			
+			Computational Economics\\
+			RWTH Aachen University\\
+			Winter Semester 2019/2020
+			
+		\end{center}
+	\end{titlepage}
+
+	%----------------------------------------------------------------------------------------
+	%	TABLE OF CONTENTS
+	%----------------------------------------------------------------------------------------
+	
+	\tableofcontents
+	\clearpage
+	
+	%----------------------------------------------------------------------------------------
+	%	ARTICLE CONTENTS
+	%----------------------------------------------------------------------------------------
+	
+	\section{Introduction}
+	
+	\lettrine[nindent=0em,lines=3]{L} orem ipsum dolor sit amet, consectetur adipiscing elit.
+	\blindtext % Dummy text
+	
+	%------------------------------------------------
+	
+	\section{Main Part}
+	\subsection{bla}
+	\blindtext
+	\blindtext
+	\blindtext
+	\blindtext
+	
+	%------------------------------------------------
+	
+	\section{Conclusion}
+	\blindtext
+	
+	\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
+		
+		\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
+		Figueredo, A.~J. and Wolf, P. S.~A. (2009).
+		\newblock Assortative pairing and life history strategy - a cross-cultural
+		study.
+		\newblock {\em Human Nature}, 20:317--330.
+		
+	\end{thebibliography}
+
+	\clearpage
+	
+	
+	%----------------------------------------------------------------------------------------
+	%	STATUTORY DECLARATION IN LIEU OF AN OATH
+	%----------------------------------------------------------------------------------------
+	
+	\begingroup
+	\begin{center}
+		\large
+		\textbf{Eidesstattliche Versicherung}
+	\end{center}
+	
+	\vspace{0.3cm}
+	
+	\begin{tabular}{@{}p{8cm}p{5.8cm}}
+		\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
+		\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
+	\end{tabular}
+	\vspace{0.3cm}
+	
+	Ich versichere hiermit an Eides Statt, dass ich die vorliegende Arbeit mit dem Titel
+	
+{\makeatletter{\emph{{\@title}}}\makeatother}
+	
+	selbständig und ohne unzulässige fremde Hilfe erbracht habe. Ich habe keine anderen als die angegebenen Quellen und Hilfsmittel benutzt. Für den Fall, dass die Arbeit zusätzlich auf einem Datenträger eingereicht wird, erkläre ich, dass die schriftliche und die elektronische Form vollständig übereinstimmen. Die Arbeit hat in gleicher oder ähnlicher Form noch keiner Prüfungsbehörde vorgelegen.
+	
+	
+	\begin{tabular}{@{}p{8cm}p{5.8cm}}
+		\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+		Ort, Datum & Unterschrift \\
+	\end{tabular}
+	
+	\vspace{0.6cm}
+	\begin{small}
+		\textbf{Belehrung:}\\
+		Wer vorsätzlich gegen eine die Täuschung über Prüfungsleistungen betreffende Regelung einer Hochschulprüfungsordnung verstößt, handelt ordnungswidrig. Die Ordnungswidrigkeit kann mit einer Geldbuße bis zu 50 000 Euro geahndet werden. Zuständige Verwaltungsbehörde für die Verfolgung und Ahndung von Ordnungswidrigkeiten ist die Kanzlerin oder der Kanzler der RWTH Aachen. Im Falle eines mehrfachen oder sonstigen schwerwiegenden Täuschungsversuches kann der Prüfling zudem exmatrikuliert werden (§ 63 Abs. 5 HG NRW).
+		
+		\textbf{§ 156 StGB: Falsche Versicherung an Eides Statt}\\
+		Wer vor einer zur Abnahme einer Versicherung an Eides Statt zuständigen Behörde eine solche Versicherung falsch abgibt oder unter Berufung auf eine solche Versicherung falsch aussagt, wird mit Freiheitsstrafe bis zu drei Jahren oder mit Geldstrafe bestraft.
+		
+		\textbf{§ 161 StGB: Fahrlässiger Falscheid; fahrlässige falsche Versicherung an Eides Statt}\\
+		(1) Wenn eine der in den §§ 154 bis 156 bezeichneten Handlungen aus Fahrlässigkeit begangen worden ist, so tritt Freiheitsstrafe bis zu einem Jahr oder Geldstrafe ein.\\
+		(2) Straflosigkeit tritt ein, wenn der Täter die falsche Angabe rechtzeitig berichtigt. Die Vorschriften des § 158 Abs. 2 und 3 gelten entsprechend
+	\end{small}
+	
+	
+	Die vorstehende Belehrung habe ich zur Kenntnis genommen:
+	
+	
+	\begin{tabular}{@{}p{8cm}p{5.8cm}}
+		\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+		Ort, Datum & Unterschrift \\
+	\end{tabular}
+	
+	\endgroup
+	\clearpage
+	
+\end{document}
