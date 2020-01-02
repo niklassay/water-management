@@ -52,13 +52,10 @@ E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
 % Discretization of expected value of rain and rounding to fit our grid 
 dimE_Rain = round(E_rain/(M/dimWL));
 
-%% Compute Value function
-
-% Create value function V for the combined value of farmers and 
-% recreational users for each water level, respecting the discounted value
-% for the next period and respecting the expected rainfall
+%% Create value function V for the combined value of farmers and recreational users for each water level
 V = zeros(dimWL,1);
 
+%% Compute Value function
 tic
 for j = 1:maxIter
     V_old = V;
