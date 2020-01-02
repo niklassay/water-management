@@ -29,7 +29,7 @@ maxIter = 10000;
 tol = 1e-6;
 
 % Number of periods for forward simulation
-T = 100;
+T = 1000;
 
 %% Rainfall simulation
 % rainfall: lognormal distribution
@@ -96,9 +96,9 @@ hold off
 
 %% forward iteration
 
-% Index for current water level; set to dimWL in period 1
+% Index for current water level; set to 1 (=empty) in period 1
 waterInd = zeros(1, T+1);
-waterInd(1) = dimWL;
+waterInd(1) = 1;
 
 % Index for water that is used for irrigation
 irrigationInd = zeros(1, T);
@@ -111,14 +111,27 @@ for i=1:T
     
 end
 
+steadyStateLvl = mean(waterLevel(waterInd));
+
+% Plot water level, amount of water used for irrigation and steady state
+% value
 figure(2)
 hold on
 plot(waterLevel(waterInd));    
 plot(waterLevel(irrigationInd));
+plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
-legend('water left','water used for irrigation');
+legend('water left','water used for irrigation','steady state level');
 title('Optimal Extraction Policy');
 xlabel('period');
 ylabel('water level in reservoir');
 hold off
-    
+
+% plot histogram
+figure(3)
+hold on
+histogram(waterLevel(waterInd),30, 'Normalization','probability');
+title('Steady-State distribution of water level');
+ylabel('probability');
+xlabel('water level in reservoir');
+hold off
