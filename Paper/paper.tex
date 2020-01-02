@@ -110,9 +110,39 @@
 	
 	\section{Introduction}
 	
-	\lettrine[nindent=0em,lines=3]{L} orem ipsum dolor sit amet, consectetur adipiscing elit.
-	\blindtext % Dummy text
-	
+	\subsection{Background}
+In this work, we want to examine the variations in use of a (hypothetical) water reservoir. Water management of reservoir lakes poses a non trivial task. Different stakeholders have different interests in how to use the water and as lakes usually are public goods, claims of all parties shall be considered. As climate change proceeds, rainfall as the natural influx of lakes becomes more volatile and prolonged dry periods make water an even more precious resource than today. 
+
+
+\subsection{Assumptions and Conditions}
+
+The water reservoir to be considered has to stakeholders: farmers, who want to use the water for irrigation purposes and ordinary people, who want to use the lake for recreational activities. \\\\
+The farmers utility function follows the form 
+
+\begin{equation}
+%	F(x) = \frac{a_1}{1+b_1} * x^{1+b_1}
+	F(x) = -\frac{1}{x}
+\end{equation}
+
+where $x$ is the amount of water to be used for irrigation.\\\\
+
+Analogously the recreational users utility function corresponds to
+
+\begin{equation}
+%  G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
+  G(s, x) = -\frac{1}{(s-x)^2}
+\end{equation}
+
+with the additional paramter $s$ which indicates the water level. 
+
+The rainfall shall be lognormal distributed: 
+\begin{equation}
+	r \sim lognormal(\mu, \sigma^2)
+\end{equation}
+
+
+
+
 	%------------------------------------------------
 	
 	\section{Main Part}
