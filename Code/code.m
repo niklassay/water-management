@@ -72,7 +72,7 @@ for j = 1:maxIter
         for iIrrigation = 1:iWL
             aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
                 utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
-                beta.*V_old(min(max(iWL-iIrrigation+1+dimE_Rain,1),dimWL));
+                beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain,1),dimWL));
         end
     end
     [V, optIrrigation_ind]= max(aux,[],2);  
