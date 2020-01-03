@@ -29,7 +29,7 @@ maxIter = 10000;
 tol = 1e-6;
 
 % Number of periods for forward simulation
-T = 1000;
+T = 100;
 
 %% Rainfall simulation
 % rainfall: lognormal distribution
@@ -122,7 +122,7 @@ plot(waterLevel(irrigationInd));
 plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
 legend('water left','water used for irrigation','steady state level');
-title('Optimal Extraction Policy');
+title('Optimal Irrigation Policy');
 xlabel('period');
 ylabel('water level in reservoir');
 hold off

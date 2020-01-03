@@ -112,36 +112,47 @@
 	\section{Introduction}
 	
 	\subsection{Background}
-In this work, we want to examine the variations in use of a (hypothetical) water reservoir. Water management of reservoir lakes poses a non trivial task. Different stakeholders have different interests in how to use the water and as lakes usually are public goods, claims of all parties shall be considered. As climate change proceeds, rainfall as the natural influx of lakes becomes more volatile and prolonged dry periods will make water an even more precious resource than it is today.
+In this work, we want to examine the variations in use of a (hypothetical) water reservoir. Water management of reservoir lakes poses a non trivial task. Different stakeholders have different interests in how to use the water and as lakes usually are public goods, claims of all parties shall be considered. As climate change proceeds, rainfall as the natural influx of lakes becomes more volatile and prolonged dry periods will make water an even more precious resource than it is today. Therefore, the optimal allocation of the available water will be of increasing importance in the future.
 
 
 \subsection{Assumptions and Conditions}
 
-The water reservoir to be considered has to stakeholders: farmers, who want to use the water for irrigation purposes and citzens, who want to use the lake for recreational activities. \\\\
+The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities. At the beginning of every year we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
 \begin{equation}
-%	F(x) = \frac{a_1}{1+b_1} * x^{1+b_1}
-	F(x) = -\frac{1}{x}
+	F(x) = \frac{a_1}{1+b_1} * x^{1+b_1}
+%	F(x) = -\frac{1}{x}
 \end{equation}
 
-where $x$ is the amount of water to be used for irrigation.\\\\
+where $x$ represents the amount of water to be used for irrigation in a year. The preference parameters are $a_1 = 1$ and $b_1 = -2$.\\\\
 
-Analogously the recreational users utility function corresponds to
+During the summer months, citizens benefit from the remaining water due to recreational use (e.g. swimming). This leads to the recreational users' utility function which can be described as
 
 \begin{equation}
-%  G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
-  G(s, x) = -\frac{1}{(s-x)^2}
+  G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
+%  G(s, x) = -\frac{1}{(s-x)^2}
 \end{equation}
 
-with the additional paramter $s$ which indicates the water level. 
+with the additional paramter $s$ which indicates the water level at the beginning of the year. For recreational users, the preference parameters shell be $a_2 = 2$ and $b_2 = -3$.\\\\
 
-The rainfall shall be lognormal distributed: 
+At the end of the year, water in the reservoir is replenished by rainfall, which we assume to be randomly following a lognormal distribution: %Evtl Zitat: https://www.waterlog.info/pdf/freqtxt.pdf
 \begin{equation}
 	r \sim lognormal(\mu, \sigma^2)
 \end{equation}
 
+with parameters $\mu = 0$ and $\sigma^2 = 1$.\\\\
 
+Other parameters are the maximum capacity of the reservoir
+\begin{equation}
+	M = 7
+\end{equation}
+
+and the discount factor for future utility 
+
+\begin{equation}
+	\beta = 0.9
+\end{equation}
 
 
 	%------------------------------------------------
