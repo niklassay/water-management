@@ -111,7 +111,11 @@ for i=1:T
     
 end
 
-steadyStateLvl = mean(waterLevel(waterInd));
+steadyStateThreshold = 20; % Change this parameter to determine the period 
+                           % after which the system is expected to be in a 
+                           % steady state (has to be smaller then T!)
+                       
+steadyStateLvl = mean(waterLevel(waterInd(steadyStateThreshold:end)));
 
 % Plot water level, amount of water used for irrigation and steady state
 % value
@@ -130,7 +134,7 @@ hold off
 % plot histogram
 figure(3)
 hold on
-histogram(waterLevel(waterInd),30, 'Normalization','probability');
+histogram(waterLevel(waterInd(steadyStateThreshold:end)),30, 'Normalization','probability');
 title('Steady-State distribution of water level');
 ylabel('probability');
 xlabel('water level in reservoir');
