@@ -36,7 +36,7 @@ T = 100;
 mu = 0;
 sigma = 1;
 
-% Realdaten
+% % Realdaten
 % c = 4; % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
 % data = csvread('chennai_reservoir_rainfall_formatted.csv',1,c,[1 c 16 c]); % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
 % mu = mean(data);
