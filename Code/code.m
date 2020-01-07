@@ -32,12 +32,19 @@ tol = 1e-6;
 T = 100;
 
 %% Rainfall simulation
-% rainfall: lognormal distribution
+% Rainfall parameters (might be overwritten by real data)
 mu = 0;
 sigma = 1;
+
+% Realdaten
+% c = 4; % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
+% data = csvread('chennai_reservoir_rainfall_formatted.csv',1,c,[1 c 16 c]); % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
+% mu = mean(data);
+% sigma = std(data);
+
+% rainfall: lognormal distribution with parameters mu and sigma
 % r = lognrnd(mu, sigma, T, 1); % Alternative
 r = exp(mu + sigma.*randn(T,1)); 
-
 
 %% Gauss-Hermite to calculate the expected value of the rain distribution
 n = 10;
