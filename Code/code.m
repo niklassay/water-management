@@ -109,19 +109,24 @@ waterInd(1) = 1;
 
 % Index for water that is used for irrigation
 irrigationInd = zeros(1, T);
-
+steadyStateLvls = zeros(2, T);
 for i=1:T
     
     irrigationInd(i) = optIrrigation_ind(waterInd(i));
     
     waterInd(i+1) = min(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)),dimWL);
-    
+    steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
+    if (i~=1)
+        % the differences to the previous mean
+        steadyStateLvls(2,i) = steadyStateLvls(1,i)-steadyStateLvls(1,i-1);
+    end
 end
 
 steadyStateThreshold = 20; % Change this parameter to determine the period 
                            % after which the system is expected to be in a 
                            % steady state (has to be smaller then T!)
-                       
+
+%% TODO write function that returns the period of steady state depending on a difference threshold
 steadyStateLvl = mean(waterLevel(waterInd(steadyStateThreshold:end)));
 
 % Plot water level, amount of water used for irrigation and steady state
@@ -130,9 +135,11 @@ figure(2)
 hold on
 plot(waterLevel(waterInd));    
 plot(waterLevel(irrigationInd));
+plot(steadyStateLvls(1,:));
+plot(steadyStateLvls(2,:));
 plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
-legend('water left','water used for irrigation','steady state level');
+legend('water left','water used for irrigation','Mean until period','Difference in mean to previous','steady state level');
 title('Optimal Irrigation Policy');
 xlabel('period');
 ylabel('water level in reservoir');
