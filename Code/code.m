@@ -110,6 +110,7 @@ waterInd(1) = 1;
 % Index for water that is used for irrigation
 irrigationInd = zeros(1, T);
 steadyStateLvls = zeros(2, T);
+steadyStateThreshold = T;
 for i=1:T
     
     irrigationInd(i) = optIrrigation_ind(waterInd(i));
@@ -122,11 +123,17 @@ for i=1:T
     end
 end
 
-steadyStateThreshold = 20; % Change this parameter to determine the period 
+for i=2:T
+    if (abs(steadyStateLvls(2,i)) < 0.05)
+        steadyStateThreshold = i;
+        break;
+    end
+end
+%steadyStateThreshold = 20; % Change this parameter to determine the period
                            % after which the system is expected to be in a 
                            % steady state (has to be smaller then T!)
 
-%% TODO write function that returns the period of steady state depending on a difference threshold
+%% TODO better threshold calculation by using more that one period to evaluate the difference
 steadyStateLvl = mean(waterLevel(waterInd(steadyStateThreshold:end)));
 
 % Plot water level, amount of water used for irrigation and steady state
