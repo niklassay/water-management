@@ -39,6 +39,10 @@
 
 \usepackage{hyperref} % For hyperlinks in the PDF
 
+\usepackage{graphicx} % for figures
+
+\usepackage{longtable}
+
 % TODO delete the lorem ipsum
 \usepackage{blindtext} % Package to generate dummy text throughout this template 
 
@@ -159,7 +163,25 @@ and the discount factor for future utility
 	
 	\section{Main Part}
 	\subsection{bla}
+	\begin{figure}[ht] % TODO remove example
+		\includegraphics[width=1\textwidth]{figures/example.png}
+		\caption{Example Image}
+		\label{fig:example-pic}
+	\end{figure}
 	\blindtext
+	\begin{figure}[ht] % TODO remove example
+		\begin{longtable}{|p{2,5cm}|p{2,5cm}|p{2,5cm}|p{3cm}|p{3cm}|}
+			\hline
+			&\multicolumn{4}{c|}{\textbf{Klasse}} \\
+			\hline
+			& \textbf{S0} & \textbf{S1} & \textbf{S2} & \textbf{S3} \\
+			\hline
+			\textbf{lorem} & ipsum & ipsum & ipsum & ipsum \\
+			\hline
+		\end{longtable}
+		\label{fig:example-figure}
+		\caption{Example Table}
+	\end{figure}
 	\blindtext
 	\blindtext
 	\blindtext
