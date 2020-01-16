@@ -3,6 +3,9 @@ close all
 clear all
 %% Parameters & utility functions
 
+% set realdaten to true or false
+realdaten = true;
+
 % Preferences
 a1 = 1;
 a2 = 2;
@@ -29,7 +32,7 @@ maxIter = 10000;
 tol = 1e-6;
 
 % Number of periods for forward simulation
-T = 100;
+T = 64;
 
 %% Rainfall simulation
 % Rainfall parameters (might be overwritten by real data)
@@ -37,24 +40,37 @@ mu = 0;
 sigma = 1;
 
 % % Realdaten
-% c = 4; % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
-% data = csvread('chennai_reservoir_rainfall_formatted.csv',1,c,[1 c 16 c]); % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
+% Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
+data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 1]); % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
+data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,2,[1 2 16 2])];
+data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,3,[1 3 16 3])];
+data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,4,[1 4 16 4])];
+% scale down to be sensible in our example
+data = data / 900;
+
 % mu = mean(data);
 % sigma = std(data);
 
 % rainfall: lognormal distribution with parameters mu and sigma
 % r = lognrnd(mu, sigma, T, 1); % Alternative
-r = exp(mu + sigma.*randn(T,1)); 
+% r = exp(mu + sigma.*randn(T,1));
+if (realdaten == true)
+    r = data;
+end
 
 %% Gauss-Hermite to calculate the expected value of the rain distribution
-n = 10;
-[x_i,w] = GaussHermite(n);
+if (realdaten == false)
+    n = 10;
+    [x_i,w] = GaussHermite(n);
 
-x_trans = sqrt(2)*sigma.*x_i + mu;
+    x_trans = sqrt(2)*sigma.*x_i + mu;
 
-% Expected value of rain
-E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
-% E_rain = lognstat(mu, sigma) % Alternative
+    % Expected value of rain
+    E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
+    % E_rain = lognstat(mu, sigma) % Alternative
+else
+    E_rain = mean(r);
+end
 
 % Discretization of expected value of rain and rounding to fit our grid 
 dimE_Rain = round(E_rain/(M/dimWL));
@@ -111,7 +127,7 @@ waterInd(1) = 1;
 irrigationInd = zeros(1, T);
 steadyStateLvls = zeros(2, T);
 steadyStateThreshold = T;
-periodsForMean = 150;
+periodsForMean = 15;
 for i=1:T
     
     irrigationInd(i) = optIrrigation_ind(waterInd(i));
