@@ -111,12 +111,17 @@ waterInd(1) = 1;
 irrigationInd = zeros(1, T);
 steadyStateLvls = zeros(2, T);
 steadyStateThreshold = T;
+periodsForMean = 150;
 for i=1:T
     
     irrigationInd(i) = optIrrigation_ind(waterInd(i));
     
     waterInd(i+1) = min(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)),dimWL);
-    steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
+    if (i>periodsForMean)
+        steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-periodsForMean:i)));
+    else
+        steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
+    end
     if (i~=1)
         % the differences to the previous mean
         steadyStateLvls(2,i) = steadyStateLvls(1,i)-steadyStateLvls(1,i-1);
@@ -124,8 +129,9 @@ for i=1:T
 end
 
 for i=2:T
-    if (abs(steadyStateLvls(2,i)) < 0.05)
+    if (abs(steadyStateLvls(2,i)) < 0.01)
         steadyStateThreshold = i;
+        fprintf('Steady state found in period %s\n',num2str(i));
         break;
     end
 end
