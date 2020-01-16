@@ -183,7 +183,7 @@ hold off
 figure(3)
 hold on
 histogram(waterLevel(waterInd(steadyStateThreshold:end)),30, 'Normalization','probability');
-title('Steady-State distribution of water level');
+title('Steady-State Distribution of Water Level');
 ylabel('probability');
 xlabel('water level in reservoir');
 hold off
