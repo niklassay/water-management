@@ -148,14 +148,15 @@ figure(2)
 hold on
 plot(waterLevel(waterInd));    
 plot(waterLevel(irrigationInd));
+plot(r);
 plot(steadyStateLvls(1,:));
 plot(steadyStateLvls(2,:));
 plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
-legend('water left','water used for irrigation','Mean until period','Difference in mean to previous','steady state level');
+legend('water level in reservoir','water used for irrigation','rain','Mean last 50 periods','Difference in mean to previous','steady state level');
 title('Optimal Irrigation Policy');
 xlabel('period');
-ylabel('water level in reservoir');
+ylabel('amount');
 hold off
 
 % plot histogram
