@@ -43,6 +43,15 @@
 
 \usepackage{longtable}
 
+% packages used for citations
+\usepackage[
+backend=biber,
+style=alphabetic,
+citestyle=authoryear,
+natbib=true
+]{biblatex}
+\addbibresource{collection.bib}
+
 % TODO delete the lorem ipsum
 \usepackage{blindtext} % Package to generate dummy text throughout this template 
 
@@ -116,7 +125,7 @@
 	\section{Introduction}
 	
 	\subsection{Motivation}
-With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people have to be fed, which will increase the demand of water for agricultural uses \cite{UN:2019}. Already today, around one third of the world's population live under physical water scarcity \cite{Vörösmarty:2000, Alcamo:2003, Oki and Kanae:2006}. With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \cite{Guhathakurta:2011}. This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \cite{Vörösmarty:2000}. Despite all those challenges, research suggests that just by using water more efficiently, we will be able to meet the acute water, environment and poverty challenges facing us over the next 50 years \cite {Molden:2013}.
+With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people have to be fed, which will increase the demand of water for agriculture uses \citep{un2019}. Already today, around one third of the world's population live under physical water scarcity \citep{vorosmarty2000global, alcamo2003global, oki2006global}. With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \citep{guhathakurta2011impact}. This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \citep{vorosmarty2000global}. Despite all those challenges, research suggests that just by using water more efficiently, we will be able to meet the acute water, environment and poverty challenges facing us over the next 50 years \citep{molden2013water}.
 Therefore, the optimal allocation and sustainable use of the available water will be of increasing importance in the future.
 
 
@@ -189,46 +198,8 @@ and the discount factor for future utility
 	
 	\section{Conclusion}
 	\blindtext
-	
-	\begin{thebibliography}{99} % Bibliography - this is intentionally simple in this template
-		
-		\bibitem[Figueredo and Wolf, 2009]{Figueredo:2009dg}
-		Figueredo, A.~J. and Wolf, P. S.~A. (2009).
-		\newblock Assortative pairing and life history strategy - a cross-cultural
-		study.
-		\newblock {\em Human Nature}, 20:317--330.
 
-		\bibitem[United Nations, 2019]{UN:2019}
-		United Nations, Department of Economic and Social Affairs, Population Division (2019). 
-		\newblock World Population Prospects 2019: Press Release.
-		
-		\bibitem[Vörösmarty et al., 2000]{Vörösmarty:2000}
-		Vörösmarty C J, Green P, Salisbury J and Lammers R B (2000).
-		\newblock Global water resources: vulnerability from climate change and population growth.
-		\newblock {\em Science}, 289:284--288.
-
-		\bibitem[Alcamo et al., 2003]{Alcamo:2003}
-		Alcamo J, Döll P, Henrichs T, Kaspar F, Lehner B, Rösch T and Siebert S (2003).
-		\newblock Global estimates of water withdrawals and availability under current and future ‘business-as-usual’ conditions.
-		\newblock {\em Hydrol. Sci. J.}, 48:339--348.
-
-		\bibitem[Oki and Kanae, 2006]{Oki and Kanae:2006}
-		Oki T and Kanae S (2006).
-		\newblock Global hydrological cycles and world water resources.
-		\newblock {\em Science}, 313:1068--1072.
-
-		\bibitem[Guhathakurta et al., 2011]{Guhathakurta:2011}	
-		Guhathakurta, P., Sreejith, O. P. and Menon, P. A. (2011).
-		\newblock Impact of climate change on extreme rainfall events and flood risk in India. 
-		\newblock {\em Journal of earth system science}, 120(3):359.
-
-		\bibitem[D. Molden, 2013]{Molden:2013}
-		Molden, D. (2013). 
-		\newblock Water for food water for life: A comprehensive assessment of water management in agriculture. 
-		\newblock {\em Routledge}
-
-		%Molden, D. (Ed.). (2007). Water for Food Water for Life. London: Routledge, https://doi.org/10.4324/9781849773799
-	\end{thebibliography}
+	\printbibliography
 
 	\newpage
 	
