@@ -41,7 +41,8 @@ sigma = 1;
 
 % % Realdaten
 % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
-data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 1]); % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
+% Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
+data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 1]);
 data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,2,[1 2 16 2])];
 data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,3,[1 3 16 3])];
 data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,4,[1 4 16 4])];
@@ -101,7 +102,8 @@ for j = 1:maxIter
     end
     [V, optIrrigation_ind]= max(aux,[],2);  
     
-    % Termination check: Break if norm is smaller then tolerance for all values that are not -inf        
+    % Termination check: Break if norm is smaller then tolerance for all
+    %values that are not -inf
     if norm(V_old(V ~= -inf) - V(V ~= -inf)) < tol
         break;
     end
@@ -170,7 +172,8 @@ plot(steadyStateLvls(1,:));
 plot(steadyStateLvls(2,:));
 plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
-legend('water level in reservoir','water used for irrigation','rain','Mean last 50 periods','Difference in mean to previous','steady state level');
+legend('water level in reservoir','water used for irrigation','rain', ...
+    'Mean last 50 periods','Difference in mean to previous','steady state level');
 title('Optimal Irrigation Policy');
 xlabel('period');
 ylabel('amount');
