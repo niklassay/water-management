@@ -4,7 +4,7 @@ clear all
 %% Parameters & utility functions
 
 % set realdaten to true or false
-realdaten = true;
+realdaten = false;
 
 % Preferences
 a1 = 1;
@@ -53,13 +53,16 @@ data = data / 900;
 
 % rainfall: lognormal distribution with parameters mu and sigma
 % r = lognrnd(mu, sigma, T, 1); % Alternative
-% r = exp(mu + sigma.*randn(T,1));
-if (realdaten == true)
+if (realdaten)
     r = data;
+else
+    r = exp(mu + sigma.*randn(T,1));
 end
 
 %% Gauss-Hermite to calculate the expected value of the rain distribution
-if (realdaten == false)
+if (realdaten)
+    E_rain = mean(r);
+else
     n = 10;
     [x_i,w] = GaussHermite(n);
 
@@ -68,8 +71,6 @@ if (realdaten == false)
     % Expected value of rain
     E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
     % E_rain = lognstat(mu, sigma) % Alternative
-else
-    E_rain = mean(r);
 end
 
 % Discretization of expected value of rain and rounding to fit our grid 
