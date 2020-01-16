@@ -125,13 +125,20 @@ natbib=true
 	\section{Introduction}
 	
 	\subsection{Motivation}
-With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people have to be fed, which will increase the demand of water for agriculture uses \citep{un2019}. Already today, around one third of the world's population live under physical water scarcity \citep{vorosmarty2000global, alcamo2003global, oki2006global}. With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \citep{guhathakurta2011impact}. This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \citep{vorosmarty2000global}. Despite all those challenges, research suggests that just by using water more efficiently, we will be able to meet the acute water, environment and poverty challenges facing us over the next 50 years \citep{molden2013water}.
+With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people have to be fed, which will increase the demand of water for agriculture uses \citep{un2019}.
+Already today, around one third of the world's population live under physical water scarcity \citep{vorosmarty2000global, alcamo2003global, oki2006global}.
+With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \citep{guhathakurta2011impact}.
+This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \citep{vorosmarty2000global}.
+Despite all those challenges, research suggests that just by using water more efficiently, we will be able to meet the acute water, environment and poverty challenges facing us over the next 50 years \citep{molden2013water}.
 Therefore, the optimal allocation and sustainable use of the available water will be of increasing importance in the future.
 
 
 \subsection{Assumptions and Conditions}
 
-In this work we want to examine the variations in use of water from a (hypothetical) water reservoir. One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered. The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities. At the beginning of every year we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
+In this work we want to examine the variations in use of water from a (hypothetical) water reservoir.
+One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
+The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
+At the beginning of every year we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
 \begin{equation}
@@ -146,7 +153,8 @@ During the summer months, citizens benefit from the remaining water due to recre
   G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
 \end{equation}
 
-with the additional paramter $s$ that indicates the water level at the beginning of the year. For recreational users, the preference parameters shell be $a_2 = 2$ and $b_2 = -3$.\\\\
+with the additional paramter $s$ that indicates the water level at the beginning of the year.
+For recreational users, the preference parameters shell be $a_2 = 2$ and $b_2 = -3$.\\\\
 
 At the end of the year, water in the reservoir is replenished by rainfall, which we can assume to be randomly following a lognormal distribution \citep{oosterbaan1994frequency}:
 \begin{equation}
@@ -166,7 +174,13 @@ and the discount factor for future utility
 	\beta = 0.9
 \end{equation}
 
-Using dynamic programming...
+Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$. 
+The sequence of events for every period is displayed in figure x. 
+
+\subsubsection{Modification 1: Variation of the discount factor}
+
+
+An theoretical explanation of the used concepts will be given in chapter x
 
 	%------------------------------------------------
 	
