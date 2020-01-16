@@ -21,3 +21,7 @@
 # to be continued
 Paper/paper.synctex.gz
 *.asv
+Paper/collection.bbl
+Paper/collection.blg
+Paper/paper.bbl
+Paper/paper.blg
