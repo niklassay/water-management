@@ -187,3 +187,12 @@ title('Steady-State Distribution of Water Level');
 ylabel('probability');
 xlabel('water level in reservoir');
 hold off
+
+% plot optimal irrigation policy
+figure (4)
+hold on
+plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind))
+title('Optimal Irrigation Policy')
+xlabel('water level in reservoir')
+ylabel('irrigation amount')
+hold off
