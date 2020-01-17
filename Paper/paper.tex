@@ -125,7 +125,7 @@ natbib=true
 	\section{Introduction}
 	
 	\subsection{Motivation}
-With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people have to be fed, which will increase the demand of water for agriculture uses \citep{un2019}.
+With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 2100, more and more people will have to be fed, which will increase the demand of water for agriculture uses \citep{un2019}.
 Already today, around one third of the world's population live under physical water scarcity \citep{vorosmarty2000global, alcamo2003global, oki2006global}.
 With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \citep{guhathakurta2011impact}.
 This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \citep{vorosmarty2000global}.
@@ -138,6 +138,7 @@ Therefore, the optimal allocation and sustainable use of the available water wil
 In this work we want to examine the variations in use of water from a (hypothetical) water reservoir.
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
 The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
+Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
 At the beginning of every year we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
@@ -147,7 +148,8 @@ The farmers utility function follows the form
 
 where $x$ represents the amount of water to be used for irrigation in a year. The preference parameters are $a_1 = 1$ and $b_1 = -2$.\\\\
 
-During the summer months, citizens benefit from the remaining water due to recreational use (e.g. swimming). This can be described by the recreational users' utility function which is
+During the summer months, citizens benefit from the remaining water due to recreational use.
+This can be described by the recreational users' utility function which is
 
 \begin{equation}
   G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
@@ -174,13 +176,20 @@ and the discount factor for future utility
 	\beta = 0.9
 \end{equation}
 
-Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$. 
-The sequence of events for every period is displayed in figure x. 
+The sequence of events for every period is displayed in figure x. \\
 
-\subsubsection{Modification 1: Variation of the discount factor}
+Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$.
+We then go on and modify the original problem in a way that will be described later on. 
+In the main part we will give a brief summary of the underlying theory and the optimization problem.
+After that we will present the results and our conclusions for the original model and its modifications, as well as possible shortfalls of our analysis.
+At the end we also give a little outlook into further possible extensions.
 
 
-An theoretical explanation of the used concepts will be given in chapter x
+\subsubsection{Modification 1: Variation of the Discount Factor}
+For our first modification we study the effects of different betas on the optimal irrigation policy. We take a look at the discount factors x and x.
+
+\subsubsection{Modification 2: Increased Rainfall Volatility}
+
 
 	%------------------------------------------------
 	
