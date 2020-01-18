@@ -179,17 +179,33 @@ and the discount factor for future utility
 The sequence of events for every period is displayed in figure x. \\
 
 Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$.
-We then go on and modify the original problem in a way that will be described later on. 
 In the main part we will give a brief summary of the underlying theory and the optimization problem.
 After that we will present the results and our conclusions for the original model and its modifications, as well as possible shortfalls of our analysis.
 At the end we also give a little outlook into further possible extensions.
 
 
 \subsubsection{Modification 1: Variation of the Discount Factor}
-For our first modification we study the effects of different betas on the optimal irrigation policy. We take a look at the discount factors x and x.
+We also study the effects of different betas on the optimal irrigation policy. 
+The discount factor takes into account that agents in a simple two-stage model often value current consumption over future consumption.
+It expresses how much one unit of future utility is worth in terms of current utility and therefore makes them easily comparable \citep{kruschwitz2014investitionsrechnung}.
+We take a look at the discount factors x and x.
 
 \subsubsection{Modification 2: Increased Rainfall Volatility}
+To consider the predicted impacts of climate change \citep{guhathakurta2011impact}, we look at the effect of increased rainfall volatility. 
+We do this by using a  $\sigma^2$ of x.
 
+\subsubsection{Modification 3: Using Real Data for Rainfall}
+Instead of simulating the rainfall with random numbers, we also use real data.
+Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
+We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the four main water reservoirs of the city Chennai, India. % Zitation anpassen
+
+\subsubsection{Modification 4: Taking Evaporation into Account}
+The dataset that contains the real rainfall data also contains the water levels in the reservoirs.
+Using these values we calculate the evaporation of water and include it in our model. \\\\
+
+
+Note that all modifications, except Modification 4, are based on the original model without any modifications.
+Modification 4 is an extension of Modification 3. 
 
 	%------------------------------------------------
 	
