@@ -139,7 +139,8 @@ In this work we want to examine the variations in use of water from a (hypotheti
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
 The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
 Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
-At the beginning of every year we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
+The sequence of events for every period is displayed in figure ~\ref{fig:Sequence}.
+At the beginning of every year (Step 1) we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
 \begin{equation}
@@ -148,7 +149,7 @@ The farmers utility function follows the form
 
 where $x$ represents the amount of water to be used for irrigation in a year. The preference parameters are $a_1 = 1$ and $b_1 = -2$.\\\\
 
-During the summer months, citizens benefit from the remaining water due to recreational use.
+During the summer months, citizens benefit from the remaining water due to recreational use (Step 2).
 This can be described by the recreational users' utility function which is
 
 \begin{equation}
@@ -158,7 +159,7 @@ This can be described by the recreational users' utility function which is
 with the additional paramter $s$ that indicates the water level at the beginning of the year.
 For recreational users, the preference parameters shell be $a_2 = 2$ and $b_2 = -3$.\\\\
 
-At the end of the year, water in the reservoir is replenished by rainfall, which we can assume to be randomly following a lognormal distribution \citep{oosterbaan1994frequency}:
+At the end of the year, water in the reservoir is replenished by rainfall (Step 3), which we can assume to be randomly following a lognormal distribution \citep{oosterbaan1994frequency}:
 \begin{equation}
 	r \sim lognormal(\mu, \sigma^2)
 \end{equation}
@@ -176,7 +177,11 @@ and the discount factor for future utility
 	\beta = 0.9
 \end{equation}
 
-The sequence of events for every period is displayed in figure x. \\
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/CESchaubild_Cut.png}
+	\caption{Sequence of Events in One Period}
+	\label{fig:Sequence}
+\end{figure}
 
 Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$.
 In the main part we will give a brief summary of the underlying theory and the optimization problem.
@@ -200,8 +205,10 @@ Comparing the results then allows us to draw conclusions on the accuracy of the 
 We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the four main water reservoirs of the city Chennai, India. % Zitation anpassen
 
 \subsubsection{Modification 4: Taking Evaporation into Account}
-The dataset that contains the real rainfall data also contains the water levels in the reservoirs.
-Using these values we calculate the evaporation of water and include it in our model. \\\\
+The evaporation of water from a water reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}.
+It therefore should definitely be considered in a real model that is used to determine the optimal irrigation strategy.
+The dataset that we use for the real rainfall also contains the water levels of the four reservoirs.
+Using these values together, we calculate the evaporation of water and include it in our model. \\\\
 
 
 Note that all modifications, except Modification 4, are based on the original model without any modifications.
