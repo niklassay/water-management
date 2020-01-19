@@ -4,7 +4,10 @@ clear all
 %% Parameters & utility functions
 
 % set realdaten to true or false
-realdaten = false;
+realdaten = true;
+
+% set use of real Evaporation data to true or false
+real_Evap = true;
 
 % Preferences
 a1 = 1;
@@ -35,31 +38,47 @@ tol = 1e-6;
 T = 64;
 
 %% Rainfall simulation
-% Rainfall parameters (might be overwritten by real data)
+% Rainfall parameters for simulation
 mu = 0;
 sigma = 1;
 
 % % Realdaten
 % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
 % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
-data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 1]);
-data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,2,[1 2 16 2])];
-data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,3,[1 3 16 3])];
-data = [data; csvread('chennai_reservoir_rainfall_formatted.csv',1,4,[1 4 16 4])];
+data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 4]);
+data = data(:);
+
 % scale down to be sensible in our example
 data = data / 900;
 
+% calculate mu and sigma from the real dataset
 % mu = mean(data);
 % sigma = std(data);
 
 % rainfall: lognormal distribution with parameters mu and sigma
-% r = lognrnd(mu, sigma, T, 1); % Alternative
 if (realdaten)
     r = data;
 else
     r = exp(mu + sigma.*randn(T,1));
 end
 
+%% Potentially read evaporation data
+dimE_Evap = 0;
+dataEvap = zeros(T,1);
+
+if (real_Evap)
+    dataEvap = csvread('chennai_evaporation_filtered_formatted.csv',1,1,[1 1 16 4]);
+    dataEvap = dataEvap(:);
+    
+    % scale down to be sensible in our example
+    dataEvap = dataEvap / 900;
+    
+    % Expected value of evaporation
+    E_Evap = mean(dataEvap);
+    
+    % Discretization of expected value of rain and rounding to fit our grid 
+    dimE_Evap = round(E_Evap/(M/dimWL));
+end
 %% Gauss-Hermite to calculate the expected value of the rain distribution
 if (realdaten)
     E_rain = mean(r);
@@ -71,7 +90,6 @@ else
 
     % Expected value of rain
     E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
-    % E_rain = lognstat(mu, sigma) % Alternative
 end
 
 % Discretization of expected value of rain and rounding to fit our grid 
@@ -97,7 +115,7 @@ for j = 1:maxIter
         for iIrrigation = 1:iWL
             aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
                 utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
-                beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain,1),dimWL));
+                beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
         end
     end
     [V, optIrrigation_ind]= max(aux,[],2);  
@@ -135,7 +153,7 @@ for i=1:T
     
     irrigationInd(i) = optIrrigation_ind(waterInd(i));
     
-    waterInd(i+1) = min(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)),dimWL);
+    waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) - round(dataEvap(i)/(M/dimWL)),1),dimWL);
     if (i>periodsForMean)
         steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-periodsForMean:i)));
     else
@@ -168,12 +186,14 @@ hold on
 plot(waterLevel(waterInd));    
 plot(waterLevel(irrigationInd));
 plot(r);
+plot(dataEvap);
 plot(steadyStateLvls(1,:));
 plot(steadyStateLvls(2,:));
 plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
 xlim([1 T]);
 legend('water level in reservoir','water used for irrigation','rain', ...
-    'Mean last 50 periods','Difference in mean to previous','steady state level');
+    'Evaporation', 'Mean last 50 periods', ...
+    'Difference in mean to previous','steady state level');
 title('Optimal Irrigation Policy');
 xlabel('period');
 ylabel('amount');
