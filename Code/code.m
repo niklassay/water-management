@@ -10,7 +10,7 @@ realdaten = true;
 if (realdaten)
     real_Evap = true;
 else
-    real_evap = false;
+    real_Evap = false;
 end
 
 % Preferences
