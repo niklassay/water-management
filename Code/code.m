@@ -7,7 +7,11 @@ clear all
 realdaten = true;
 
 % set use of real Evaporation data to true or false
-real_Evap = true;
+if (realdaten)
+    real_Evap = true;
+else
+    real_evap = false;
+end
 
 % Preferences
 a1 = 1;
