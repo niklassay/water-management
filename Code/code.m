@@ -35,7 +35,11 @@ maxIter = 10000;
 tol = 1e-6;
 
 % Number of periods for forward simulation
-T = 64;
+if (realdaten)
+    T = 64;
+else
+    T = 300;
+end
 
 %% Rainfall simulation
 % Rainfall parameters for simulation
