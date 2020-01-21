@@ -232,7 +232,8 @@ for monteInd=1:monteCarloMaxIter
     plot(steadyStateLvls(1,:));
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    plot([steadyStatePeriod steadyStatePeriod],[0 7],'--g');
+    area = patch([steadyStatePeriod-periodsForMean steadyStatePeriod steadyStatePeriod steadyStatePeriod-periodsForMean],[0 0 7 7],'r');
+    alpha(area,.2)
     xlim([1 T]);
     legend('water level in reservoir',strcat('Mean last ', periodsForMean, ' periods'), ...
         'Difference in mean to previous', 'steady state level');
