@@ -53,7 +53,7 @@ for monteInd=1:monteCarloMaxIter
     if (realdaten)
         T = 64;
     else
-        T = 300;
+        T = 1000;
     end
 
     %% Rainfall simulation
@@ -191,8 +191,8 @@ for monteInd=1:monteCarloMaxIter
     % Index for water that is used for irrigation
     irrigationInd = zeros(1, T);
     steadyStateLvls = zeros(2, T);
-    steadyStateThreshold = T;
-    periodsForMean = 15;
+    steadyStatePeriod = T;
+    periodsForMean = 200;
     for i=1:T
 
         irrigationInd(i) = optIrrigation_ind(waterInd(i));
@@ -210,20 +210,36 @@ for monteInd=1:monteCarloMaxIter
     end
 
     for i=2:T
-        if (abs(steadyStateLvls(2,i)) < 0.01)
-            steadyStateThreshold = i;
+        if (abs(steadyStateLvls(2,i)) < 0.0001)
+            steadyStatePeriod = i;
+            steadyStateLvl = steadyStateLvls(1,i);
             fprintf('Steady state found in period %s\n',num2str(i));
             break;
         end
     end
-    %steadyStateThreshold = 20; % Change this parameter to determine the period
+    %steadyStatePeriod = 20; % Change this parameter to determine the period
                                % after which the system is expected to be in a 
                                % steady state (has to be smaller then T!)
 
     %% TODO better threshold calculation by using more that one period to evaluate the difference
-    steadyStateLvl = mean(waterLevel(waterInd(steadyStateThreshold:end)));
+    % steadyStateLvl = mean(waterLevel(waterInd(steadyStatePeriod:end)));
     monteCarloSteadyState(monteInd) = steadyStateLvl;
     fprintf('Iteration %s ended with steady State: %s\n',num2str(monteInd), num2str(steadyStateLvl));
+    
+    figure(8)
+    hold on
+    plot(waterLevel(waterInd));
+    plot(steadyStateLvls(1,:));
+    plot(steadyStateLvls(2,:));
+    plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
+    plot([steadyStatePeriod steadyStatePeriod],[0 7],'--g');
+    xlim([1 T]);
+    legend('water level in reservoir',strcat('Mean last ', periodsForMean, ' periods'), ...
+        'Difference in mean to previous', 'steady state level');
+    title('Steady State of Water Level');
+    xlabel('period');
+    ylabel('amount');
+    hold off
 end
 
 if(monteCarloSimulation)
@@ -253,8 +269,8 @@ else
     % plot histogram
     figure(3)
     hold on
-    histogram(waterLevel(waterInd(steadyStateThreshold:end)),30, 'Normalization','probability');
-    title('Steady-State Distribution of Water Level');
+    histogram(waterLevel(waterInd(steadyStatePeriod:end)),30, 'Normalization','probability');
+    title('Distribution of Water Level');
     ylabel('probability');
     xlabel('water level in reservoir');
     hold off
@@ -277,7 +293,7 @@ else
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
     xlim([1 T]);
-    legend('water level in reservoir','Mean last 100 periods', ...
+    legend('water level in reservoir',strcat('Mean last ', periodsForMean, ' periods'), ...
         'Difference in mean to previous', 'steady state level');
     title('Steady State of Water Level');
     xlabel('period');
