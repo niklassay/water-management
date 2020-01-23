@@ -225,22 +225,6 @@ for monteInd=1:monteCarloMaxIter
     % steadyStateLvl = mean(waterLevel(waterInd(steadyStatePeriod:end)));
     monteCarloSteadyState(monteInd) = steadyStateLvl;
     fprintf('Iteration %s ended with steady State: %s\n',num2str(monteInd), num2str(steadyStateLvl));
-    
-    figure(8)
-    hold on
-    plot(waterLevel(waterInd));
-    plot(steadyStateLvls(1,:));
-    plot(steadyStateLvls(2,:));
-    plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    area = patch([steadyStatePeriod-periodsForMean steadyStatePeriod steadyStatePeriod steadyStatePeriod-periodsForMean],[0 0 7 7],'r');
-    alpha(area,.2)
-    xlim([1 T]);
-    legend('water level in reservoir',strcat('Mean last ', periodsForMean, ' periods'), ...
-        'Difference in mean to previous', 'steady state level');
-    title('Steady State of Water Level');
-    xlabel('period');
-    ylabel('amount');
-    hold off
 end
 
 if(monteCarloSimulation)
@@ -253,6 +237,25 @@ if(monteCarloSimulation)
     xlabel('water level in reservoir');
     hold off
 else
+    figure(8)
+    hold on
+    plot(waterLevel(waterInd));
+    plot(steadyStateLvls(1,:));
+    plot(steadyStateLvls(2,:));
+    plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
+    area = patch([steadyStatePeriod-periodsForMean steadyStatePeriod steadyStatePeriod steadyStatePeriod-periodsForMean],[0 0 7 7],'r');
+    alpha(area,.2)
+    xlim([1 T]);
+    ylim([-1 11]);
+    legend('water level in reservoir',append('Mean last ', num2str(periodsForMean), ' periods'), ...
+        'Difference in mean to previous', 'steady state level');
+    title('Steady State of Water Level');
+    xlabel('period');
+    ylabel('amount');
+    set(gca,'FontSize',12)
+    set(gcf,'Units','Centimeters','position',[0,0,16,12]);
+    hold off
+    
     % Plot water level, amount of water used for irrigation and steady state
     % value
     figure(2)
