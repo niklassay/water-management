@@ -228,24 +228,34 @@ Modification 4 is an extension of Modification 3.
 	f(t) = sin(\pi t), \; t \in [0,1]
 	\end{equation}
 
-Now, it's trivial to compute the flow at any given time using code, simply by implementing the formula as given above. However, if we want to compute the amount of water flowing through the pipe in the interval $[0.25, 0.5]$, we can not calculate that directly, as we would have to know the antiderivative of $f(t)$. In this example, this might be solved analytically 
+Now, it's trivial to compute the flow at any given time using code, simply by implementing the formula as given above. However, if we want to compute the amount of water flowing through the pipe in the time interval $[0.25, 0.5]$, we can not calculate that directly, as we would have to know the antiderivative of $f(t)$. Apart from this example, it's not always trivial to calculate the antiderivative of a function analytically. However it is possible compute the area below (almost) any function using numerical integration, also called numerical quadrature. 
 
+A naive implementation of a quadrature could be to calculate the total area of equidistant rectangles whose height corresponds to the function value of $f$: 
 
+	\begin{figure}[ht] 
+		\includegraphics[width=1\textwidth]{figures/quadratureA.eps}
+		\caption{Quadrature using Midpoint Rule}
+		\label{fig:quadrature-a}
+	\end{figure}
+This implementation of a quadrature is called \emph{Midpoint Rule}. 
+\\
 
----	
-	
-	
-	(Für die Präsentation)
-	
-	
-%	\begin{equation}
-%	V_t =  max\{u_{farmer}(irrigation_t) + u_{recreationalUser}(irrigation_t, waterLevel_t) \\
-%		
-%	+ 	\beta*(u_{farmer}(irrigation_{t-1}) + u_{recreationalUser}(irrigation_{t-1}, waterLevel_{t-1})\}
-%	\end{equation}
+A more sophisticated way to determine the area of an unbounded integral is to use the Gauss-Hermite Formula
 
+	\begin{equation}
+	\int_{-\infty}^{\infty} f(x)e^{-x^2} dx \approx \sum_{i=1}^{n}{w_if(x_i)}
+	\end{equation}
+
+where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the nth Hermite polynomial. \cite{seminar:week6}
+
+	\subsection{bla}
+	\begin{figure}[ht] % TODO remove example
+		\includegraphics[width=1\textwidth]{figures/example.png}
+		\caption{Example Image}
+		\label{fig:example-pic}
+	\end{figure}
 	\blindtext
-	\begin{figure}[ht]
+	\begin{figure}[ht] % TODO remove example
 		\begin{longtable}{|p{2,5cm}|p{2,5cm}|p{2,5cm}|p{3cm}|p{3cm}|}
 			\hline
 			&\multicolumn{4}{c|}{\textbf{Klasse}} \\
