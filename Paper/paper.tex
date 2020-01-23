@@ -221,20 +221,14 @@ Modification 4 is an extension of Modification 3.
 	(Für die Präsentation)
 	
 	
-	\begin{dmath}
-	V_t =  max\{u_{farmer}(irrigation_t) + u_{recreationalUser}(irrigation_t, waterLevel_t) \\
-		
-	+ 	\beta*(u_{farmer}(irrigation_{t-1}) + u_{recreationalUser}(irrigation_{t-1}, waterLevel_{t-1})\}
-	\end{dmath}
+%	\begin{equation}
+%	V_t =  max\{u_{farmer}(irrigation_t) + u_{recreationalUser}(irrigation_t, waterLevel_t) \\
+%		
+%	+ 	\beta*(u_{farmer}(irrigation_{t-1}) + u_{recreationalUser}(irrigation_{t-1}, waterLevel_{t-1})\}
+%	\end{equation}
 
-	\subsection{bla}
-	\begin{figure}[ht] % TODO remove example
-		\includegraphics[width=1\textwidth]{figures/example.png}
-		\caption{Example Image}
-		\label{fig:example-pic}
-	\end{figure}
 	\blindtext
-	\begin{figure}[ht] % TODO remove example
+	\begin{figure}[ht]
 		\begin{longtable}{|p{2,5cm}|p{2,5cm}|p{2,5cm}|p{3cm}|p{3cm}|}
 			\hline
 			&\multicolumn{4}{c|}{\textbf{Klasse}} \\
@@ -259,8 +253,32 @@ Modification 4 is an extension of Modification 3.
 	Furthermore we made several modifications to the task which will be discussed additionally.
 	All results will be visualized by plots made within our simulation in MATLAB.
 	\subsection{Optimal irrigation policy}
+	When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
+	The value function as posed in % TODO put links to theory here
+	contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
+	\ref{fig:value-function} show the value function calculated for all possible water levels between the allowed boundaries of 0 and 7.
+	\begin{figure}[ht]
+		\includegraphics{figures/value_function.eps}
+		\caption{Value Function}
+		\label{fig:value-function}
+	\end{figure}
+	\begin{figure}[ht]
+		\includegraphics{figures/OptimalIrrigationPolicy.eps}
+		\caption{Optimal Irrigation Policy}
+		\label{fig:optimal-irrigation-policy}
+	\end{figure}
 	\subsection{Steady State}
+	\begin{figure}[ht]
+		\includegraphics{figures/steadyState.eps}
+		\caption{Exemplary Calculation of the Steady State}
+		\label{fig:steadyState}
+	\end{figure}
 	\subsection{Steady State Probability}
+	\begin{figure}[ht]
+		\includegraphics{figures/steadyStateMonteCarlo.eps}
+		\caption{Steady State Probability}
+		\label{fig:steadyStateMonteCarlo}
+	\end{figure}
 	\subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
 	\subsection{Changed Volatility of Rainfalls}
 
