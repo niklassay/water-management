@@ -275,8 +275,8 @@ where the weights $w_i$ are given as the solution to a linear system of equation
 	\blindtext
 	
 	%------------------------------------------------
-	
-	\section{Conclusion}
+	\newpage
+	\section{Results}
 	This chapter will discuss the outcomes and results of the implemented functionality in MATLAB.
 	The discussion will be started on the basic questions asked by the project description.
 	Furthermore we made several modifications to the task which will be discussed additionally.
@@ -285,25 +285,45 @@ where the weights $w_i$ are given as the solution to a linear system of equation
 	When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
 	The value function as posed in % TODO put links to theory here
 	contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
-	\ref{fig:value-function} show the value function calculated for all possible water levels between the allowed boundaries of 0 and 7.
-	The plot shows a rising proposed irrigation amount with rising water level up to a water level of approximately 1.5 where a declining irrigation amount is favored.
+	Figure \ref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/value_function.eps}
 		\caption{Value Function}
 		\label{fig:value-function}
 	\end{figure}
+	\newline
+	Every value along the possible water level leads to a irrigation amount that optimizes the value for all users in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
+	The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
+	\begin{itemize}
+		\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
+		\item The diminishing margin utility of farmers lead to a decreasing gradient for the proposed irrigation amount with increasing water level.
+	\end{itemize}
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/OptimalIrrigationPolicy.eps}
 		\caption{Optimal Irrigation Policy}
 		\label{fig:optimal-irrigation-policy}
 	\end{figure}
 	\subsection{Steady State}
+	% TODO maybe move to theory?
+	In systems theory, a system or a process is in a steady state if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
+	The variable defining the behavior of our system is the water level. 
+	Because of this, we have to calculate the difference in water level for each period. 
+	Due to the fact, that our water level highly depends on the randomly distributed rainfalls that rise up the water level at the end of each period, it is not possible to find a state steady. 
+	To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
+	A exemplary graph of the mean in every period and the difference to its predecessor is shown in figure \ref{fig:steadyState}.
+	Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
+	The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/steadyState.eps}
 		\caption{Exemplary Calculation of the Steady State}
 		\label{fig:steadyState}
 	\end{figure}
 	\subsection{Steady State Probability}
+	As mentioned above, the steady state changes from simulation to simulation.
+	In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
+	To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
+	We then counted the occurrences, normalized them and calculated the corresponding probability.
+	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
 		\caption{Steady State Probability}
