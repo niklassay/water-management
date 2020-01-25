@@ -11,178 +11,208 @@ else
 end
 monteCarloSteadyState = zeros(monteCarloMaxIter,1);
 
-for monteInd=1:monteCarloMaxIter
 %% Parameters & utility functions
 
-    % set realdaten to true or false
-    realdaten = false;
+% set realdaten to true or false
+realdaten = false;
 
-    % set use of real Evaporation data to true or false
-    if (realdaten)
-        real_Evap = true;
-    else
-        real_Evap = false;
-    end
+% Define which real data you want to use. Has to correspond exactly to
+% names from dataset
+useRealDataFrom = 'Barisal';
 
-    % Preferences
-    a1 = 1;
-    a2 = 2;
-    b1 = -2;
-    b2 = -3;
+% set use of real Evaporation data to true or false
+if (realdaten)
+    real_Evap = true;
+else
+    real_Evap = false;
+end
 
-    M = 7; % Capacity Reservior
-    beta = 0.9; % Discount factor
+% Preferences
+a1 = 1;
+a2 = 2;
+b1 = -2;
+b2 = -3;
 
-    % utility functions
-    utilFar = @(x) (a1 / (1 + b1)) * x .^ (1 + b1);
-    utilRec = @(s,x) (a2 / (1 + b2)) * (s - x) .^ (1 + b2);
+M = 7; % Capacity Reservior
+beta = 0.9; % Discount factor
 
-    %% Create grid and iteration parameters
+% utility functions
+utilFar = @(x) (a1 / (1 + b1)) * x .^ (1 + b1);
+utilRec = @(s,x) (a2 / (1 + b2)) * (s - x) .^ (1 + b2);
 
-    % We need a grid to evaluate the value function for different water levels
-    % and different periods.
-    % We define dimWL different water levels
-    dimWL = 100;
-    waterLevel = linspace(0,M,dimWL);
+%% Create grid and iteration parameters
 
-    % Iteration parameters
-    maxIter = 10000;
-    tol = 1e-6;
+% We need a grid to evaluate the value function for different water levels
+% and different periods.
+% We define dimWL different water levels
+dimWL = 1000;
+waterLevel = linspace(0,M,dimWL);
 
-    % Number of periods for forward simulation
-    if (realdaten)
-        T = 64;
-    else
-        T = 1000;
-    end
+% Iteration parameters
+maxIter = 10000;
+tol = 1e-6;
 
-    %% Rainfall simulation
-    % Rainfall parameters for simulation
-    mu = 0;
-    sigma = 1;
+% Number of periods for forward simulation (will be overwritten if
+% using realdaten
+T = 1000;
 
-    % % Realdaten
-    % Column: 1,2,3,4 = POONDI,CHOLAVARAM,REDHILLS,CHEMBARAMBAKKAM
-    % Syntax csvread(filename,R1,C1,[R1 C1 R2 C2])
-    data = csvread('chennai_reservoir_rainfall_formatted.csv',1,1,[1 1 16 4]);
-    data = data(:);
+%% Rainfall simulation
+% Rainfall parameters for simulation
+mu = 0;
+sigma = 1;
+
+% Realdaten       
+data = readtable('bangladesh_weather_formatted.csv');
+% Find Column indices of data you want to use
+indData = find(strcmp(table2cell(data(1,:)), useRealDataFrom));
+
+% Extract the wanted rainfall data
+avgRain = str2double(table2array(data(5:end,indData(1,4)))); % avg per Month
+
+avgRain = avgRain * 12; % avg per Year
+
+% Exclude NaNs
+avgRain = avgRain(~isnan(avgRain));
+
+% scale down to be sensible in our example
+avgRain = avgRain / 900;
+
+% calculate mu and sigma from the real dataset
+% mu = mean(data);
+% sigma = std(data);
+
+%% Potentially read evaporation data
+if (real_Evap)
+    % Extract needed Data
+    altitude = str2double(table2array(data(2,indData(1,1))));
+    latitude = str2double(table2array(data(3,indData(1,1))));
+    avgMaxTemp = str2double(table2array(data(5:end,indData(1,1))));
+    avgMinTemp = str2double(table2array(data(5:end,indData(1,2))));
+    avgMeanTemp = (avgMaxTemp + avgMinTemp) / 2;
+    avgHumidity = str2double(table2array(data(5:end,indData(1,3))));
+
+    % Calculate the Evaporation by formulas from paper
+    e = (700 .* (avgMeanTemp + 0.006 .* altitude) ./...
+    (100 - latitude) + 15 .* ((100 - avgHumidity) / 5))...
+    ./ (80 - avgMeanTemp); % Avg Evaporation in mm per day
+
+    e = e * 365.25; % Avg Evaporation in mm per year
+
+    % Exclude NaNs
+    e = e(~isnan(e));
 
     % scale down to be sensible in our example
-    data = data / 900;
+    e = e / 900;
 
-    % calculate mu and sigma from the real dataset
-    % mu = mean(data);
-    % sigma = std(data);
+    % Expected value of evaporation
+    E_Evap = mean(e);
 
+    % Discretization of expected value of rain and rounding to fit our grid 
+    dimE_Evap = round(E_Evap/(M/dimWL));
+else 
+    e = zeros(T,1);
+    dimE_Evap = 0;
+end
+%% Gauss-Hermite to calculate the expected value of the rain distribution
+if (realdaten)
+    E_rain = mean(avgRain);
+else
+    n = 10;
+    [x_i,w] = GaussHermite(n);
+
+    x_trans = sqrt(2)*sigma.*x_i + mu;
+
+    % Expected value of rain
+    E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
+end
+
+% Discretization of expected value of rain and rounding to fit our grid 
+dimE_Rain = round(E_rain/(M/dimWL));
+
+%% Compute Value function
+
+% Create value function V for the combined value of farmers and 
+% recreational users for each water level, respecting the discounted value
+% for the next period and respecting the expected rainfall
+V = zeros(dimWL,1);
+
+tic
+for j = 1:maxIter
+    V_old = V;
+
+    % We need an auxiliary matrix "aux" for each water level and depending
+    % on that each possible amount of water used for irrigation. Then we'll
+    % use aux to find the maximum over all amounts of water used for
+    % irrigation for each water level in the reservoir
+    aux = zeros(dimWL, dimWL) + NaN;
+    aux_farm = zeros(dimWL, dimWL) + NaN;
+    aux_rec = zeros(dimWL, dimWL) + NaN;
+    for iWL = 1:dimWL
+        for iIrrigation = 1:iWL
+            aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
+                utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
+                beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
+            aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
+            aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
+        end
+    end
+    [V, optIrrigation_ind]= max(aux,[],2);  
+
+    % Termination check: Break if norm is smaller then tolerance for all
+    % values that are not -inf
+    if norm(V_old(V ~= -inf) - V(V ~= -inf)) < tol
+        break;
+    end
+toc
+end
+
+% don't print all the diagrams if running the Monte Carlo Simulation
+if(monteCarloSimulation==false)
+    figure(6)
+    hold on
+    surf(aux_farm);
+    colormap(jet);
+    xlabel('Amount of Water Used For Irrigation');
+    ylabel('Amount of Water in the Reservoir');
+    zlabel('Value');
+    hold off
+
+    figure(7)
+    hold on
+    surf(aux_rec);
+    colormap(jet);
+    xlabel('Amount of Water Used For Irrigation');
+    ylabel('Amount of Water in the Reservoir');
+    zlabel('Value');
+    hold off
+
+    % Plot Value function
+    figure(1)
+    hold on
+    plot(waterLevel,V(:));
+    title('Value function');
+    xlabel('Water Level');
+    ylabel('maximum value V');
+    axis([0 M -20 0]);
+    hold off
+end
+
+%% Start of Monte Carlo Simulation for Steady Sta
+for monteInd=1:monteCarloMaxIter
+    %% Actually simulate the rainfall or use real data
     % rainfall: lognormal distribution with parameters mu and sigma
     if (realdaten)
-        r = data;
+        r = avgRain;
     else
         r = exp(mu + sigma.*randn(T,1));
     end
-
-    %% Potentially read evaporation data
-    dimE_Evap = 0;
-    dataEvap = zeros(T,1);
-
-    if (real_Evap)
-        dataEvap = csvread('chennai_evaporation_filtered_formatted.csv',1,1,[1 1 16 4]);
-        dataEvap = dataEvap(:);
-
-        % scale down to be sensible in our example
-        dataEvap = dataEvap / 900;
-
-        % Expected value of evaporation
-        E_Evap = mean(dataEvap);
-
-        % Discretization of expected value of rain and rounding to fit our grid 
-        dimE_Evap = round(E_Evap/(M/dimWL));
-    end
-    %% Gauss-Hermite to calculate the expected value of the rain distribution
-    if (realdaten)
-        E_rain = mean(r);
-    else
-        n = 10;
-        [x_i,w] = GaussHermite(n);
-
-        x_trans = sqrt(2)*sigma.*x_i + mu;
-
-        % Expected value of rain
-        E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
-    end
-
-    % Discretization of expected value of rain and rounding to fit our grid 
-    dimE_Rain = round(E_rain/(M/dimWL));
-
-    %% Compute Value function
-
-    % Create value function V for the combined value of farmers and 
-    % recreational users for each water level, respecting the discounted value
-    % for the next period and respecting the expected rainfall
-    V = zeros(dimWL,1);
-
-    %tic
-    for j = 1:maxIter
-        V_old = V;
-
-        % We need an auxiliary matrix "aux" for each water level and depending
-        % on that each possible amount of water used for irrigation. Then we'll
-        % use aux to find the maximum over all amounts of water used for
-        % irrigation for each water level in the reservoir
-        aux = zeros(dimWL, dimWL) + NaN;
-        aux_farm = zeros(dimWL, dimWL) + NaN;
-        aux_rec = zeros(dimWL, dimWL) + NaN;
-        for iWL = 1:dimWL
-            for iIrrigation = 1:iWL
-                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
-                    utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
-                    beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
-                aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
-                aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
-            end
-        end
-        [V, optIrrigation_ind]= max(aux,[],2);  
-
-        % Termination check: Break if norm is smaller then tolerance for all
-        %values that are not -inf
-        if norm(V_old(V ~= -inf) - V(V ~= -inf)) < tol
-            break;
-        end
-    %toc
-    end
     
-    % don't print all the diagrams if running the Monte Carlo Simulation
-    if(monteCarloSimulation==false)
-        figure(6)
-        hold on
-        surf(aux_farm);
-        colormap(jet);
-        xlabel('Amount of Water Used For Irrigation');
-        ylabel('Amount of Water in the Reservoir');
-        zlabel('Value');
-        hold off
-
-        figure(7)
-        hold on
-        surf(aux_rec);
-        colormap(jet);
-        xlabel('Amount of Water Used For Irrigation');
-        ylabel('Amount of Water in the Reservoir');
-        zlabel('Value');
-        hold off
-
-        % Plot Value function
-        figure(1)
-        hold on
-        plot(waterLevel,V(:));
-        title('Value function');
-        xlabel('Water Level');
-        ylabel('maximum value V');
-        axis([0 M -20 0]);
-        hold off
-    end
-
     %% forward iteration
+    
+    % Overwrite T to match available data points if using realdaten
+    if (realdaten)
+        T = size(r,1);
+    end
 
     % Index for current water level; set to 1 (=empty) in period 1
     waterInd = zeros(1, T+1);
@@ -197,7 +227,8 @@ for monteInd=1:monteCarloMaxIter
 
         irrigationInd(i) = optIrrigation_ind(waterInd(i));
 
-        waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) - round(dataEvap(i)/(M/dimWL)),1),dimWL);
+        waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) - round(e(i)/(M/dimWL)),1),dimWL);
+        
         if (i>periodsForMean)
             steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-periodsForMean:i)));
         else
