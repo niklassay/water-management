@@ -204,13 +204,27 @@ We do this by using a  $\sigma^2$ of x.
 \subsubsection{Modification 3: Using Real Data for Rainfall}
 Instead of simulating the rainfall with random numbers, we also use real data.
 Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
-We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the four main water reservoirs of the city Chennai, India. % Zitation anpassen
+We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
 
 \subsubsection{Modification 4: Taking Evaporation into Account}
 The evaporation of water from a water reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}.
 It therefore should definitely be considered in a real model that is used to determine the optimal irrigation strategy.
-The dataset that we use for the real rainfall also contains the water levels of the four reservoirs.
-Using these values together, we calculate the evaporation of water and include it in our model. \\\\
+The dataset that we use for the real rainfall also contains many other weather parameters.
+With the mean temperature $T$, the elevation $h$, the latitude $A$ and the dew point $T_d$ we calculate an estimate for evaporation of water in mm per day for that specific location, using the formula \citep{linacre1977simple}
+
+\begin{equation}
+	{E_0} = \frac{700 * (T + 0.006h) / (100 - A) + 15 * (T - T_d)}{(80 - T)}
+\end{equation}
+
+and then multiply the result with 365.25 to get the estimated evaporation in mm per year. 
+Note, however, that due to a lack of data on the real mean temperature in a year, we use the average of the minimum and maximum temperature of every month for all months in a year as $T$. \\
+The average dew point $T_d$ can be estimated by 
+
+\begin{equation}
+	{T_d} = T - (\frac{100 - RH}{5})
+\end{equation}
+
+where RH is the average relative humidity of the year in percent \citep{lawrence2005relationship}.\\\\
 
 
 Note that all modifications, except Modification 4, are based on the original model without any modifications.
