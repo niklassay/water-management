@@ -250,7 +250,7 @@ A naive implementation of a quadrature could be to calculate the total area of e
 
 	\begin{figure}[ht] 
 		\includegraphics[width=1\textwidth]{figures/quadratureA.eps}
-		\caption{Quadrature using Midpoint Rule}
+		\caption{Quadrature using the Midpoint Rule}
 		\label{fig:quadrature-a}
 	\end{figure}
 This implementation of a quadrature is called \emph{Midpoint Rule}. 
@@ -262,7 +262,7 @@ A more sophisticated way to determine the area of an unbounded integral is to us
 	\int_{-\infty}^{\infty} f(x)e^{-x^2} dx \approx \sum_{i=1}^{n}{w_if(x_i)}
 	\end{equation}
 
-where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the nth Hermite polynomial. \cite{seminar:week6}
+where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the nth Hermite polynomial. (\cite{seminar:week6})
 
 	\subsection{bla}
 	\begin{figure}[ht] % TODO remove example
