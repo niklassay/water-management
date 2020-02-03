@@ -1,89 +1,124 @@
-clc 
-close all
-clear all
+%% Reset the Script Environment
+clc;
+close all;
+clear all;
 
-%% turn monteCarloSimulation for distribution of the steady state on/off
-monteCarloSimulation = true;
-if(monteCarloSimulation)
-    monteCarloMaxIter = 500;
-else
-    monteCarloMaxIter = 1;
-end
-monteCarloSteadyState = zeros(monteCarloMaxIter,1);
+%% Simulation Parameters 
 
-%% Parameters & utility functions
+% Switch to use a monte Carlo simulation to determine the steady state
+useMonteCarloSimulation = true;
 
-% set realdaten to true or false
-realdaten = false;
+% The count of iterations to be used in the monte carlo simulation, if
+% enabled
+monteCarloMaxIter = 500;
 
-% Define which real data you want to use. Has to correspond exactly to
-% names from dataset
-useRealDataFrom = 'Barisal';
+% Switch to use real rainfall and evaporation data 
+useRealData = false;
 
-% set use of real Evaporation data to true or false
-if (realdaten)
-    real_Evap = true;
-else
-    real_Evap = false;
-end
+% Set the file name of the weather dataset
+realDataSource = 'bangladesh_weather_formatted.csv';
 
-% Preferences
+% Set the name of the location in the weather dataset to be used to
+% simulate the evaporation
+locationName = 'Barisal';
+
+% Parameters of the value function
 a1 = 1;
 a2 = 2;
 b1 = -2;
 b2 = -3;
 
-M = 7; % Capacity Reservior
-beta = 0.9; % Discount factor
+% Total capacity of the reservoir
+M = 7;
 
-% utility functions
-utilFar = @(x) (a1 / (1 + b1)) * x .^ (1 + b1);
-utilRec = @(s,x) (a2 / (1 + b2)) * (s - x) .^ (1 + b2);
+% Discount factor
+beta = 0.9;
 
-%% Create grid and iteration parameters
-
-% We need a grid to evaluate the value function for different water levels
-% and different periods.
-% We define dimWL different water levels
-dimWL = 1000;
-waterLevel = linspace(0,M,dimWL);
-
-% Iteration parameters
-maxIter = 10000;
-tol = 1e-6;
-
-% Number of periods for forward simulation (will be overwritten if
-% using realdaten
+% Number of periods for the forward simulation, will be overwritten when
+% using real data
 T = 1000;
 
-%% Rainfall simulation
-% Rainfall parameters for simulation
+% Parameters for rainfall distribution, if simulated
 mu = 0;
 sigma = 1;
 
-% Realdaten       
-data = readtable('bangladesh_weather_formatted.csv');
-% Find Column indices of data you want to use
-indData = find(strcmp(table2cell(data(1,:)), useRealDataFrom));
 
-% Extract the wanted rainfall data
-avgRain = str2double(table2array(data(5:end,indData(1,4)))); % avg per Month
+% Count of different water levels
+dimWL = 1000;
 
-avgRain = avgRain * 12; % avg per Year
+% The simulation stops if either the iteration limit or
+% the tolerance limit is reached
+% Iteration limit
+valueFunctionMaxIter = 10000;
+% Tolerance limit
+valueFunctionTolerance = 1e-6;
 
-% Exclude NaNs
-avgRain = avgRain(~isnan(avgRain));
+% The count of periods to use to calculate the mean steady state levels
+steadyStateMeanPeriods = 200;
+% The steady state calculation stops if tolerance imit is reached
+steadyStateTolerance = 0.0001;
 
-% scale down to be sensible in our example
-avgRain = avgRain / 900;
+%% Initialization
 
-% calculate mu and sigma from the real dataset
-% mu = mean(data);
-% sigma = std(data);
+if(useRealData)
+    % Load weather dataset
+    data = readtable(weatherDataSource);
+end
 
-%% Potentially read evaporation data
-if (real_Evap)
-    % Extract needed Data
+% Initialize the monte carlo simulation
+if (~useMonteCarloSimulation)
+    monteCarloMaxIter = 1;
+end
+monteCarloSteadyState = zeros(monteCarloMaxIter,1);
+
+% Utility function of the the farmers
+utilFar = @(x) (a1 / (1 + b1)) * x .^ (1 + b1);
+% Utility function of the recreational users
+utilRec = @(s,x) (a2 / (1 + b2)) * (s - x) .^ (1 + b2);
+
+% Create a grid of the water levels to later evaluate the value function 
+% for different water levels and periods
+waterLevel = linspace(0,M,dimWL);
+
+%% Rainfall simulation
+if (useRealData)
+    % Find column indices of the necessary data
+    indData = find(strcmp(table2cell(data(1,:)), locationName));
+
+    % Extract the rainfall data and calculate the average per year
+    avgRain = str2double(table2array(data(5:end,indData(1,4)))) * 12;
+
+    % Exclude missing values
+    avgRain = avgRain(~isnan(avgRain));
+
+    % Scale the real data down to be sensible in this example
+    avgRain = avgRain / 900;
+    
+    % Expected value of the rainfall
+    E_rain = mean(avgRain);
+else
+    % Use gauss-hermite to calculate the expected value of the rainfall
+    % distribution
+    
+    % Number of nodes
+    n = 10;
+    
+    [x_i,w] = GaussHermite(n);
+    x_trans = sqrt(2)*sigma.*x_i + mu;
+    
+    % Expected value of the rainfall
+    E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
+end
+
+% Discretize and round the expected value of the rain to fit to
+% the grid
+dimE_Rain = round(E_rain/(M/dimWL));
+
+
+%% Evaporation Simulation
+
+if (useRealData)
+    % Extract the data necessary for the evaporation simulation
     altitude = str2double(table2array(data(2,indData(1,1))));
     latitude = str2double(table2array(data(3,indData(1,1))));
     avgMaxTemp = str2double(table2array(data(5:end,indData(1,1))));
@@ -91,59 +126,45 @@ if (real_Evap)
     avgMeanTemp = (avgMaxTemp + avgMinTemp) / 2;
     avgHumidity = str2double(table2array(data(5:end,indData(1,3))));
 
-    % Calculate the Evaporation by formulas from paper
-    e = (700 .* (avgMeanTemp + 0.006 .* altitude) ./...
+    % Calculate the evaporation with the formula given in the literature
+    % (average evaporation in mm per year)
+    e = ((700 .* (avgMeanTemp + 0.006 .* altitude) ./...
     (100 - latitude) + 15 .* ((100 - avgHumidity) / 5))...
-    ./ (80 - avgMeanTemp); % Avg Evaporation in mm per day
-
-    e = e * 365.25; % Avg Evaporation in mm per year
-
-    % Exclude NaNs
+    ./ (80 - avgMeanTemp)) * 365.25; 
+    
+    % Exclude missing values
     e = e(~isnan(e));
 
-    % scale down to be sensible in our example
+    % Scale the real data down to be sensible in this example
     e = e / 900;
 
-    % Expected value of evaporation
+    % Expected value of the evaporation
     E_Evap = mean(e);
 
-    % Discretization of expected value of rain and rounding to fit our grid 
+    % Discretize and round the expected value of the evaporation to fit to
+    % the grid
     dimE_Evap = round(E_Evap/(M/dimWL));
 else 
+    % Use no evaporation
     e = zeros(T,1);
     dimE_Evap = 0;
 end
-%% Gauss-Hermite to calculate the expected value of the rain distribution
-if (realdaten)
-    E_rain = mean(avgRain);
-else
-    n = 10;
-    [x_i,w] = GaussHermite(n);
 
-    x_trans = sqrt(2)*sigma.*x_i + mu;
+%% Computation of the Value Function
 
-    % Expected value of rain
-    E_rain = (1/sqrt(pi)) * w' * exp(x_trans);
-end
-
-% Discretization of expected value of rain and rounding to fit our grid 
-dimE_Rain = round(E_rain/(M/dimWL));
-
-%% Compute Value function
-
-% Create value function V for the combined value of farmers and 
+% Create a value function for the combined value of farmers and 
 % recreational users for each water level, respecting the discounted value
-% for the next period and respecting the expected rainfall
+% for the next period and the expected rainfall and evaporation
 V = zeros(dimWL,1);
 
 tic
-for j = 1:maxIter
+for j = 1:valueFunctionMaxIter
     V_old = V;
 
-    % We need an auxiliary matrix "aux" for each water level and depending
-    % on that each possible amount of water used for irrigation. Then we'll
-    % use aux to find the maximum over all amounts of water used for
-    % irrigation for each water level in the reservoir
+    % Create an auxiliary matrix for each water level and depending on that
+    % each possible amount of water to be used for irrigation. Then use
+    % the auxiliary matrix to find the maximum over all amounts of water 
+    % used for irrigation for each water level in the reservoir
     aux = zeros(dimWL, dimWL) + NaN;
     aux_farm = zeros(dimWL, dimWL) + NaN;
     aux_rec = zeros(dimWL, dimWL) + NaN;
@@ -158,169 +179,175 @@ for j = 1:maxIter
     end
     [V, optIrrigation_ind]= max(aux,[],2);  
 
-    % Termination check: Break if norm is smaller then tolerance for all
-    % values that are not -inf
-    if norm(V_old(V ~= -inf) - V(V ~= -inf)) < tol
+    % Termination check: break if the norm is smaller than the tolerance 
+    % (excluding -inf values)
+    if norm(V_old(V ~= -inf) - V(V ~= -inf)) < valueFunctionTolerance
         break;
     end
 toc
 end
 
-% don't print all the diagrams if running the Monte Carlo Simulation
-if(monteCarloSimulation==false)
+
+% Do not print all the diagrams if running monte carlo simulation
+% Note: figures 6 and 7 require manual panning and zooming in order to
+% see the details
+if(~useMonteCarloSimulation)
+    % Plot the auxiliary matrix of the farmers
     figure(6)
     hold on
     surf(aux_farm);
     colormap(jet);
+    title('Auxiliary Matrix of the Farmers');
     xlabel('Amount of Water Used For Irrigation');
     ylabel('Amount of Water in the Reservoir');
     zlabel('Value');
     hold off
-
+    
+    % Plot the auxiliary matrix of the recreational user
     figure(7)
     hold on
     surf(aux_rec);
     colormap(jet);
+    title('Auxiliary Matrix of the Recreational Users');
     xlabel('Amount of Water Used For Irrigation');
     ylabel('Amount of Water in the Reservoir');
     zlabel('Value');
     hold off
 
-    % Plot Value function
+    % Plot the value function
     figure(1)
     hold on
     plot(waterLevel,V(:));
-    title('Value function');
+    title('Value Function');
     xlabel('Water Level');
-    ylabel('maximum value V');
+    ylabel('Maximum Value V');
     axis([0 M -20 0]);
     hold off
 end
 
-%% Start of Monte Carlo Simulation for Steady Sta
+%% (Monte Carlo) Simulation for the Steady State
+
 for monteInd=1:monteCarloMaxIter
-    %% Actually simulate the rainfall or use real data
-    % rainfall: lognormal distribution with parameters mu and sigma
-    if (realdaten)
+    if (useRealData)
+        % Use real rainfall data
         r = avgRain;
     else
+        % Use lognormal distributed rainfall
         r = exp(mu + sigma.*randn(T,1));
     end
     
-    %% forward iteration
-    
-    % Overwrite T to match available data points if using realdaten
-    if (realdaten)
+    % Overwrite T to match available data points if using real data
+    if (useRealData)
         T = size(r,1);
     end
 
-    % Index for current water level; set to 1 (=empty) in period 1
+    % Index for the current water level
     waterInd = zeros(1, T+1);
+    % Set the index to 1 (empty) in period 1
     waterInd(1) = 1;
 
     % Index for water that is used for irrigation
     irrigationInd = zeros(1, T);
+    
+    % Steady state levels
     steadyStateLvls = zeros(2, T);
     steadyStatePeriod = T;
-    periodsForMean = 200;
+    
+    % Perform the forward iteration
     for i=1:T
-
         irrigationInd(i) = optIrrigation_ind(waterInd(i));
 
         waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) - round(e(i)/(M/dimWL)),1),dimWL);
         
-        if (i>periodsForMean)
-            steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-periodsForMean:i)));
+        if (i>steadyStateMeanPeriods)
+            steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-steadyStateMeanPeriods:i)));
         else
             steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
         end
         if (i~=1)
-            % the differences to the previous mean
             steadyStateLvls(2,i) = steadyStateLvls(1,i)-steadyStateLvls(1,i-1);
         end
     end
 
     for i=2:T
-        if (abs(steadyStateLvls(2,i)) < 0.0001)
+        if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
             steadyStatePeriod = i;
             steadyStateLvl = steadyStateLvls(1,i);
-            fprintf('Steady state found in period %s\n',num2str(i));
+            fprintf('Steady State found in period %s\n',num2str(i));
             break;
         end
     end
-    %steadyStatePeriod = 20; % Change this parameter to determine the period
-                               % after which the system is expected to be in a 
-                               % steady state (has to be smaller then T!)
 
-    %% TODO better threshold calculation by using more that one period to evaluate the difference
-    % steadyStateLvl = mean(waterLevel(waterInd(steadyStatePeriod:end)));
     monteCarloSteadyState(monteInd) = steadyStateLvl;
-    fprintf('Iteration %s ended with steady State: %s\n',num2str(monteInd), num2str(steadyStateLvl));
+    fprintf('Iteration %s ended with Steady State %s\n',num2str(monteInd), num2str(steadyStateLvl));
 end
 
-if(monteCarloSimulation)
-    edges= [0:0.1:7];
+if(useMonteCarloSimulation)
+    edges = [0:0.1:7];
+    % Plot monte carlo steady states
     figure(1)
     hold on
-    histogram(monteCarloSteadyState, edges, 'Normalization', 'probability')
+    histogram(monteCarloSteadyState, edges, 'Normalization', 'Probability')
     title('Probability of Water Level Steady States');
-    ylabel('probability');
-    xlabel('water level in reservoir');
+    ylabel('Probability');
+    xlabel('Water Level in of the Reservoir');
     hold off
 else
+    % Plot simulation steady state
     figure(8)
     hold on
     plot(waterLevel(waterInd));
     plot(steadyStateLvls(1,:));
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    area = patch([steadyStatePeriod-periodsForMean steadyStatePeriod steadyStatePeriod steadyStatePeriod-periodsForMean],[0 0 7 7],'r');
+    area = patch([steadyStatePeriod-steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
     alpha(area,.2)
     xlim([1 T]);
     ylim([-1 11]);
-    legend('water level in reservoir',append('Mean last ', num2str(periodsForMean), ' periods'), ...
-        'Difference in mean to previous', 'steady state level');
+    legend('Water Level of the Reservoir',append('Mean last ', num2str(steadyStateMeanPeriods), ' Periods'), ...
+        'Difference in Mean to previous', 'Steady State Level');
     title('Steady State of Water Level');
-    xlabel('period');
-    ylabel('amount');
+    xlabel('Period');
+    ylabel('Amount');
     set(gca,'FontSize',12)
     set(gcf,'Units','Centimeters','position',[0,0,16,12]);
     hold off
     
-    % Plot water level, amount of water used for irrigation and steady state
-    % value
+    % Plot water level, amount of water used for irrigation, rainfall and
+    % evaporation
     figure(2)
     hold on
     plot(waterLevel(waterInd));    
     plot(waterLevel(irrigationInd));
     plot(r);
+    plot(e);
     xlim([1 T]);
-    legend('water level in reservoir','water used for irrigation','rain');
+    legend('Water Level of the Reservoir','Water used for Irrigation',...
+    'Rain','Evaporation');
     title('Optimal Irrigation Policy');
-    xlabel('period');
-    ylabel('amount');
+    xlabel('Period');
+    ylabel('Amount');
     hold off
 
-    % plot histogram
+    % Plot water level histogram
     figure(3)
     hold on
-    histogram(waterLevel(waterInd(steadyStatePeriod:end)),30, 'Normalization','probability');
+    histogram(waterLevel(waterInd(steadyStatePeriod:end)),30, 'Normalization','Probability');
     title('Distribution of Water Level');
-    ylabel('probability');
-    xlabel('water level in reservoir');
+    ylabel('Probability');
+    xlabel('Water Level of the Reservoir');
     hold off
 
-    % plot optimal irrigation policy
-    figure (4)
+    % Plot optimal irrigation policy
+    figure(4)
     hold on
     plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind))
     title('Optimal Irrigation Policy')
-    xlabel('water level in reservoir')
-    ylabel('irrigation amount')
+    xlabel('Water Level of the Reservoir')
+    ylabel('Irrigation Amount')
     hold off
 
-    % Plot water level, amount of water used for irrigation and steady state
-    % value
+    % Plot water level, steady state mean, mean-delta steady state level
     figure(5)
     hold on
     plot(waterLevel(waterInd));
@@ -328,10 +355,11 @@ else
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
     xlim([1 T]);
-    legend('water level in reservoir',strcat('Mean last ', periodsForMean, ' periods'), ...
-        'Difference in mean to previous', 'steady state level');
+    legend('Water Level of the Reservoir',strcat('Mean last ', ...
+        num2str(steadyStateMeanPeriods), ' Periods'), ...
+        'Difference in Mean to previous', 'Steady State Level');
     title('Steady State of Water Level');
-    xlabel('period');
-    ylabel('amount');
+    xlabel('Period');
+    ylabel('Amount');
     hold off
 end
