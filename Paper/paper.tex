@@ -92,7 +92,7 @@ natbib=true
 			\vspace{1cm}
 			
 			\textbf{Martin Wicke} \\
-			stud. M.Sc. Business Administration and Engineering: Electrical Power Engineering\\
+			stud. 4th semester M.Sc. Business Administration and Engineering: Electrical Power Engineering\\
 			Matr. Nr. 336301 \\
 			\href{mailto:martin.wicke@rwth-aachen.de}{martin.wicke@rwth-aachen.de} 
 			
@@ -263,6 +263,31 @@ A more sophisticated way to determine the area of an unbounded integral is to us
 	\end{equation}
 
 where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the nth Hermite polynomial. (\cite{seminar:week6})
+
+\subsection{Dynamic Programming}
+
+A common technique to solve optimization or combinatorial problems is called Dynamic Programming. It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aimed to provide a solution to multi-stage-decision processes. He defines a \texit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard o the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
+
+\subsection{Implementation} % TODO: Better title?
+
+In a first step, we want to compute the value function $V$ for each state $s$. In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. Obviously, the $aux$ matrix can only a finite, discrete amount of values. In this work, a resolution of $n = 1000$ different water levels and irrigation amounts should suffice. Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
+$$
+s = \left( \begin{array}{c}0\\...\\7\end{array}\right), \hspace{3mm}x = \left( \begin{array}{c}0\\...\\7\end{array}\right)
+$$
+Note that the maximum reservoir capacity is $7$ and $|s|=|x| = n = 1000$. 
+
+For a combined utility of the farmers and the recreational users  $u(s_i,x_j) = F(x_j) + G(s_i,x_j)$, depending on the water level $s_i$ and the amount of irrigation $x_i$ we get an auxiliary matrix
+$$
+aux = \left[ \begin{array}{ccccc}                                u(s_1, x_1)& \varnothing & \varnothing & ... & \varnothing \\                                               u(s_2, x_1)& u(s_2, x_2)& \varnothing & ... & \varnothing \\                                               u(s_3, x_1)& ... & u(s_3, x_3)& ... & \varnothing \\                                              ... & ... & ... & ... & \varnothing \\                                              u(s_n, x_1)& ... & ... & ... & u(s_n, x_n)\\                                               \end{array}\right]\\\\\\+\beta*\left[ \begin{array}{ccccc}                                V'(s_1') & \varnothing & \varnothing & ... & \varnothing \\                                               V'(s_1') & V'(s_2') & \varnothing & ... & \varnothing \\                                               V'(s_1') & ... & V'(s_3') & ... & \varnothing \\                                              ... & ... & ... & ... & \varnothing \\                                              V'(s_1') & ... & ... & ... & V'(s_n') \\                                               \end{array}\right]
+$$
+where upper right triangle of this matrix will be empty, as the amount of water, that can be taken from the reservoir must be smaller or equal to the amount of water in the reservoir. 
+
+Here, $V'$ represents the value for $V$ in the previous iteration and will be set to $V'(s'_1) = (0,...0)^T$. Iteratively, we use the bellman equation to calculate a new optimal V: 
+
+$$V(s) = \underset{x}{max}(u(s,x) + \beta*V'(s')))$$
+
+which equals to finding the column $aux$ that maximizes the expected value over all states (TODO: kann man das so sagen?). We repeat this step over and over again until the our value function $V$ converges. 
+
 
 	\subsection{bla}
 	\begin{figure}[ht] % TODO remove example
