@@ -173,6 +173,7 @@ for j = 1:valueFunctionMaxIter
             aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
                 utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
                 beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
+            % Generate aux_farm and aux_rec for plotting in a later step 
             aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
             aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
         end
