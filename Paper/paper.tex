@@ -307,8 +307,7 @@ Note that the maximum reservoir capacity is $7$ and $|s|=|x| = n = 1000$.
 For a combined utility of the farmers and the recreational users  $u(s_i,x_j) = F(x_j) + G(s_i,x_j)$, depending on the water level $s_i$ and the amount of irrigation $x_i$ we get an auxiliary matrix
 
 \begin{dmath}
-aux &= \left[
- \begin{array}{ccccc} 
+aux = \left[\begin{array}{ccccc} 
 u(s_1, x_1)& \emptyset & \emptyset & ... & \emptyset \\ u(s_2, x_1)& u(s_2, x_2)& \emptyset & ... & \emptyset \\                                               u(s_3, x_1)& ... & u(s_3, x_3)& ... & \emptyset \\                                              ... & ... & ... & ... & \emptyset \\                                              u(s_n, x_1)& ... & ... & ... & u(s_n, x_n)\\                                               \end{array}\right]+\beta*\left[ \begin{array}{ccccc}
 V'(s_1') & \emptyset & \emptyset & ... & \emptyset \\                                               V'(s_1') & V'(s_2') & \emptyset & ... & \emptyset \\                                               V'(s_1') & ... & V'(s_3') & ... & \emptyset \\                                              ... & ... & ... & ... & \emptyset \\                                              V'(s_1') & ... & ... & ... & V'(s_n') \\                                               \end{array}\right]
 \end{dmath}
