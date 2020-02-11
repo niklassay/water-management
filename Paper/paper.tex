@@ -89,7 +89,7 @@ natbib=true
 			
 			\textbf{Niklas Sayer} \\
 			stud. 2nd semester M.Sc. Business Administration and Engineering: Materials- and Process Engineering\\
-			Matr. Nr. 332404
+			Matr. Nr. 332404 \\
 			\href{mailto:niklas.sayer@rwth-aachen.de}{niklas.sayer@rwth-aachen.de} 
 			
 			\vspace{1cm}
@@ -370,7 +370,7 @@ Finally, we want to compute the value of the steady state by using a monte carlo
 		\label{fig:value-function}
 	\end{figure}
 	\newline
-	Every value along the possible water level leads to a irrigation amount that optimizes the value for all users in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
+	Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
 	The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
 	\begin{itemize}
 		\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
@@ -401,10 +401,7 @@ Finally, we want to compute the value of the steady state by using a monte carlo
 	In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
 	To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
 	We then counted the occurrences, normalized them and calculated the corresponding probability.
-	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
-	The highest possibility for a steady state is around 4.2. 
-	In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
-	The curve resembles a normal distribution. 
+	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
 		\caption{Steady State Probability}
