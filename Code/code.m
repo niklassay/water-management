@@ -150,45 +150,7 @@ else
     dimE_Evap = 0;
 end
 
-%% Computation of the Value Function
-
-% Create a value function for the combined value of farmers and 
-% recreational users for each water level, respecting the discounted value
-% for the next period and the expected rainfall and evaporation
-V = zeros(dimWL,1);
-
-tic
-for j = 1:valueFunctionMaxIter
-    V_old = V;
-
-    % Create an auxiliary matrix for each water level and depending on that
-    % each possible amount of water to be used for irrigation. Then use
-    % the auxiliary matrix to find the maximum over all amounts of water 
-    % used for irrigation for each water level in the reservoir
-    aux = zeros(dimWL, dimWL) + NaN;
-    aux_farm = zeros(dimWL, dimWL) + NaN;
-    aux_rec = zeros(dimWL, dimWL) + NaN;
-    for iWL = 1:dimWL
-        for iIrrigation = 1:iWL
-            aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
-                utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
-                beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
-            % Generate aux_farm and aux_rec for plotting in a later step 
-            aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
-            aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
-        end
-    end
-    % Compute V and the optimum irrigation index (for each water level
-    % step) using the bellman equation
-    [V, optIrrigation_ind]= max(aux,[],2);  
-
-    % Termination check: break if the norm is smaller than the tolerance 
-    % (excluding -inf values)
-    if norm(V_old(V ~= -inf) - V(V ~= -inf)) < valueFunctionTolerance
-        break;
-    end
-toc
-end
+[V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
 
 
 % Do not print all the diagrams if running monte carlo simulation
@@ -368,4 +330,47 @@ else
     xlabel('Period');
     ylabel('Amount');
     hold off
+end
+
+function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance)
+    %% Computation of the Value Function
+
+    % Create a value function for the combined value of farmers and
+    % recreational users for each water level, respecting the discounted value
+    % for the next period and the expected rainfall and evaporation
+    V = zeros(dimWL,1);
+
+    tic
+    for j = 1:valueFunctionMaxIter
+        V_old = V;
+
+        % Create an auxiliary matrix for each water level and depending on that
+        % each possible amount of water to be used for irrigation. Then use
+        % the auxiliary matrix to find the maximum over all amounts of water
+        % used for irrigation for each water level in the reservoir
+        aux = zeros(dimWL, dimWL) + NaN;
+        aux_farm = zeros(dimWL, dimWL) + NaN;
+        aux_rec = zeros(dimWL, dimWL) + NaN;
+        for iWL = 1:dimWL
+            for iIrrigation = 1:iWL
+                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
+                    utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
+                    beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
+                % Generate aux_farm and aux_rec for plotting in a later step 
+                aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
+                aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
+            end
+        end
+        % Compute V and the optimum irrigation index (for each water level
+        % step) using the bellman equation
+
+        [V, optIrrigation_ind]= max(aux,[],2);
+
+        % Termination check: break if the norm is smaller than the tolerance
+        % (excluding -inf values)
+        if norm(V_old(V ~= -inf) - V(V ~= -inf)) < valueFunctionTolerance
+            break;
+        end
+    toc
+    end
 end
