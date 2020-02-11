@@ -13,7 +13,7 @@ useMonteCarloSimulation = false;
 monteCarloMaxIter = 500;
 
 % Switch to use real rainfall and evaporation data 
-useRealData = true;
+useRealData = false;
 
 % Set the file name of the weather dataset
 realDataSource = 'bangladesh_weather_formatted.csv';
@@ -364,7 +364,7 @@ else
     % Plot optimal irrigation policy
     figure(9)
     hold on
-    for beta=1:-0.05:0.1
+    for beta=0.95:-0.05:0.1
         % Computation of the Value Function
         [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
         plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind), 'color', colormap_jet(round(256*beta),:))
