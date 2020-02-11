@@ -247,7 +247,10 @@ Modification 4 is an extension of Modification 3.
 	f(t) = sin(\pi t), \; t \in [0,1]
 	\end{equation}
 
-Now, it's trivial to compute the flow at any given time using code, simply by implementing the formula as given above. However, if we want to compute the amount of water flowing through the pipe in the time interval $[0.25, 0.5]$, we can not calculate that directly, as we would have to know the antiderivative of $f(t)$. Apart from this example, it's not always trivial to calculate the antiderivative of a function analytically. However it is possible compute the area below (almost) any function using numerical integration, also called numerical quadrature. 
+Now, it's trivial to compute the flow at any given time using code, simply by implementing the formula as given above. 
+However, if we want to compute the amount of water flowing through the pipe in the time interval $[0.25, 0.5]$, we can not calculate that directly, as we would have to know the antiderivative of $f(t)$. 
+Apart from this example, it's not always trivial to calculate the antiderivative of a function analytically. 
+[TODO: zwei mal however]However it is possible compute the area below (almost) any function using numerical integration, also called numerical quadrature. 
 
 A naive implementation of a quadrature could be to calculate the total area of equidistant rectangles whose height corresponds to the function value of $f$: 
 
@@ -269,7 +272,11 @@ where the weights $w_i$ are given as the solution to a linear system of equation
 
 \subsection{Dynamic Programming}
 
-A common technique to solve optimization or combinatorial problems is called Dynamic Programming. It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aimed to provide a solution to multi-stage-decision processes. He defines a \texit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard o the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
+A common technique to solve optimization or combinatorial problems is called Dynamic Programming. 
+It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). 
+In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aimed to provide a solution to multi-stage-decision processes. 
+He defines a \texit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). 
+This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard o the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
 
 \subsection{The Bellman Equation}
 
@@ -286,7 +293,10 @@ So the value of the control variable to be set is the one that maximizes both th
 
 \subsection{Implementation} % TODO: Better title?
 
-In a first step, we want to compute the value function $V$ for each state $s$. In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. Obviously, the $aux$ matrix can only a finite, discrete amount of values. In this work, a resolution of $n = 1000$ different water levels and irrigation amounts should suffice. Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
+In a first step, we want to compute the value function $V$ for each state $s$. 
+In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. 
+Obviously, the $aux$ matrix can only a finite, discrete amount of values. In this work, a resolution of $n = 1000$ different water levels and irrigation amounts should suffice. 
+Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
 
 	\begin{equation}
 s = \left( \begin{array}{c}0\\...\\7\end{array}\right),\hspace{2mm}x = \left( \begin{array}{c}0\\...\\7\end{array}\right)
@@ -311,9 +321,10 @@ Here, $V'$ represents the value for $V$ in the previous iteration and will be se
 V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 \end{equation}
 
-which equals to finding the column $aux$ that maximizes the expected value over all states (TODO: kann man das so sagen?). We repeat this step over and over again until the our value function $V$ converges (technically: the norm of the difference between $V'$ and $V$ falls below a certain tolerance value). 
+which equals to finding the column $aux$ that maximizes the expected value over all states (TODO: kann man das so sagen?).
+We repeat this step over and over again until the our value function $V$ converges (technically: the norm of the difference between $V'$ and $V$ falls below a certain tolerance value). \\
 
-Finally, we want to compute the value for the steady state. 
+Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 
 
 
