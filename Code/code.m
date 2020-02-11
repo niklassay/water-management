@@ -6,14 +6,14 @@ clear all;
 %% Simulation Parameters 
 
 % Switch to use a monte Carlo simulation to determine the steady state
-useMonteCarloSimulation = true;
+useMonteCarloSimulation = false;
 
 % The count of iterations to be used in the monte carlo simulation, if
 % enabled
 monteCarloMaxIter = 500;
 
 % Switch to use real rainfall and evaporation data 
-useRealData = false;
+useRealData = true;
 
 % Set the file name of the weather dataset
 realDataSource = 'bangladesh_weather_formatted.csv';
@@ -35,7 +35,7 @@ M = 7;
 beta = 0.9;
 
 % Number of periods for the forward simulation, will be overwritten when
-% using real data
+% using real data with the actually available amount of period data
 T = 1000;
 
 % Parameters for rainfall distribution, if simulated
@@ -62,7 +62,7 @@ steadyStateTolerance = 0.0001;
 
 if(useRealData)
     % Load weather dataset
-    data = readtable(weatherDataSource);
+    data = readtable(realDataSource);
 end
 
 % Initialize the monte carlo simulation
@@ -211,10 +211,10 @@ for monteInd=1:monteCarloMaxIter
     % Set the index to 1 (empty) in period 1
     waterInd(1) = 1;
 
-    % Index for water that is used for irrigation
+    % Amount of water (as index) over time to be used for irrigation
     irrigationInd = zeros(1, T);
     
-    % Steady state levels
+    % Steady state levels of water in the reservoir over time
     steadyStateLvls = zeros(2, T);
     % Initialize the steady state period with the amount of
     % periods of the forward iteration in case no steady state will be
@@ -223,31 +223,44 @@ for monteInd=1:monteCarloMaxIter
     
     % Perform the forward iteration
     for i=1:T
+        % Irrigate with the optimal amount of water concerning the current
+        % water level
         irrigationInd(i) = optIrrigation_ind(waterInd(i));
-
-        waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) - round(e(i)/(M/dimWL)),1),dimWL);
         
-        if (i>steadyStateMeanPeriods)
-            steadyStateLvls(1,i) = mean(waterLevel(waterInd(i-steadyStateMeanPeriods:i)));
+        % Calculate the water level in the following period
+        waterInd(i+1) = min(max(waterInd(i) ...
+                            - irrigationInd(i) ...
+                            + round(r(i)/(M/dimWL)) ...
+                            - round(e(i)/(M/dimWL)),1),dimWL);
+        
+        % Calculate the steady state level of the water reservoir
+        if (i > steadyStateMeanPeriods)
+            steadyStateLvls(1,i) = mean(waterLevel(waterInd(i...
+                                             - steadyStateMeanPeriods:i)));
         else
             steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
         end
-        if (i~=1)
-            steadyStateLvls(2,i) = steadyStateLvls(1,i)-steadyStateLvls(1,i-1);
+        
+        % Calculate the change in the steady state levels
+        if (i > 1)
+            steadyStateLvls(2,i) = steadyStateLvls(1,i)...
+                                   - steadyStateLvls(1,i-1);
         end
     end
-
+    
+    
     for i=2:T
         if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
             steadyStatePeriod = i;
             steadyStateLvl = steadyStateLvls(1,i);
-            fprintf('Steady State found in period %s\n',num2str(i));
+            fprintf('Steady State found in period %s\n', num2str(i));
             break;
         end
     end
 
     monteCarloSteadyState(monteInd) = steadyStateLvl;
-    fprintf('Iteration %s ended with Steady State %s\n',num2str(monteInd), num2str(steadyStateLvl));
+    fprintf('Iteration %s ended with Steady State %s\n', ...
+             num2str(monteInd), num2str(steadyStateLvl));
 end
 
 if(useMonteCarloSimulation)
@@ -268,11 +281,14 @@ else
     plot(steadyStateLvls(1,:));
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    area = patch([steadyStatePeriod-steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
+    area = patch([steadyStatePeriod ...
+        -steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod ... 
+        steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
     alpha(area,.2)
     xlim([1 T]);
     ylim([-1 11]);
-    legend('Water Level of the Reservoir',append('Mean last ', num2str(steadyStateMeanPeriods), ' Periods'), ...
+    legend('Water Level of the Reservoir',append('Mean last ', ... 
+        num2str(steadyStateMeanPeriods), ' Periods'), ...
         'Difference in Mean to previous', 'Steady State Level');
     title('Steady State of Water Level');
     xlabel('Period');
@@ -300,7 +316,8 @@ else
     % Plot water level histogram
     figure(3)
     hold on
-    histogram(waterLevel(waterInd(steadyStatePeriod:end)),30, 'Normalization','Probability');
+    histogram(waterLevel(waterInd(steadyStatePeriod:end)),30, ... 
+        'Normalization','Probability');
     title('Distribution of Water Level');
     ylabel('Probability');
     xlabel('Water Level of the Reservoir');
