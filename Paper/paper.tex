@@ -390,7 +390,10 @@ Finally, we want to compute the value for the steady state.
 	In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
 	To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
 	We then counted the occurrences, normalized them and calculated the corresponding probability.
-	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}
+	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
+	The highest possibility for a steady state is around 4.2. 
+	In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
+	The curve resembles a normal distribution. 
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
 		\caption{Steady State Probability}
