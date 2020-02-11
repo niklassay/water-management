@@ -376,13 +376,26 @@ We repeat this step over and over again until the our value function $V$ converg
 	In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
 	To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
 	We then counted the occurrences, normalized them and calculated the corresponding probability.
-	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}
+	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
+	The highest possibility for a steady state is around 4.2. 
+	In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
+	The curve resembles a normal distribution. 
+	
 	\begin{figure}[ht]
 		\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
 		\caption{Steady State Probability}
 		\label{fig:steadyStateMonteCarlo}
 	\end{figure}
 	\subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
+	When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
+	Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
+	A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
+	This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
+	\begin{figure}[ht]
+		\includegraphics[width=1\textwidth]{figures/optimum-policy-over-beta.eps}
+		\caption{Optimal irrigation policy as a function of the discount factor $\beta$}
+		\label{fig:optimal-irrigation-beta}
+	\end{figure}
 	\subsection{Changed Volatility of Rainfalls}
 
 	\printbibliography
