@@ -330,6 +330,20 @@ else
     xlabel('Period');
     ylabel('Amount');
     hold off
+
+    colormap_jet = colormap(parula);
+    % Plot optimal irrigation policy
+    figure(9)
+    hold on
+    for beta=1:-0.05:0.1
+        % Computation of the Value Function
+        [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
+        plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind), 'color', colormap_jet(round(256*beta),:))
+    end
+    title('Optimal Irrigation Policy')
+    xlabel('Water Level of the Reservoir')
+    ylabel('Irrigation Amount')
+    hold off
 end
 
 function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance)
