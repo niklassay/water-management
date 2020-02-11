@@ -221,7 +221,7 @@ for monteInd=1:monteCarloMaxIter
     % found
     steadyStatePeriod = T;
     
-    % Perform the forward iteration
+    % Perform a forward iteration
     for i=1:T
         % Irrigate with the optimal amount of water concerning the current
         % water level
@@ -248,8 +248,10 @@ for monteInd=1:monteCarloMaxIter
         end
     end
     
-    
+    % Try to find a steady state
     for i=2:T
+        % A steady state has been found if the changes in the steady state
+        % levels are below the steady state tolerance
         if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
             steadyStatePeriod = i;
             steadyStateLvl = steadyStateLvls(1,i);
@@ -257,7 +259,8 @@ for monteInd=1:monteCarloMaxIter
             break;
         end
     end
-
+    
+    % Save the steady state of the current monte carlo iteration
     monteCarloSteadyState(monteInd) = steadyStateLvl;
     fprintf('Iteration %s ended with Steady State %s\n', ...
              num2str(monteInd), num2str(steadyStateLvl));
