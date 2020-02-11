@@ -45,6 +45,7 @@
 \usepackage{hyperref} % For hyperlinks in the PDF
 
 \usepackage{graphicx} % for figures
+\usepackage{subcaption}
 
 \usepackage{longtable}
 
@@ -400,7 +401,31 @@ We repeat this step over and over again until the our value function $V$ converg
 	\end{figure}
 	\newpage
 	\subsection{Changed Volatility of Rainfalls}
-
+	A more volatile rainfall means a rainfall having a higher standard deviation.
+	Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
+	Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. 
+	(See \ref{eq:rainfall} for reference) 
+	\begin{equation}
+		mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
+	\end{equation} 
+	Both distributions are visualized in \ref{fig:rain-distributions}.
+	\begin{figure}
+		\begin{subfigure}{0.5\textwidth}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/rainfall-default.eps}
+			\caption{$\mu=0, \sigma=1$}
+			\label{fig:rainfall-default}
+		\end{subfigure}%
+		\begin{subfigure}{.5\textwidth}
+			\centering
+			\includegraphics[width=1\textwidth]{figures/rainfall-more-volatile.eps}
+			\caption{$\mu=-1.5, \sigma=2$}
+			\label{fig:rainfall-changed}
+		\end{subfigure}
+		\caption{Different Rain Distributions}
+		\label{fig:rain-distributions}
+	\end{figure}
+	\newpage
 	\printbibliography
 
 	\newpage
