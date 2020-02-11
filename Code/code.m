@@ -257,17 +257,20 @@ for monteInd=1:monteCarloMaxIter
     end
     
     % Try to find a steady state
-    for i=2:T
-        % A steady state has been found if the changes in the steady state
-        % levels are below the steady state tolerance
-        if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
-            steadyStatePeriod = i;
-            steadyStateLvl = steadyStateLvls(1,i);
-            fprintf('Steady State found in period %s\n', num2str(i));
-            break;
+    if(~useMonteCarloSimulation)
+        steadyStateLvl = steadyStateLvls(1,i);
+    else
+        for i=2:T
+            % A steady state has been found if the changes in the steady state
+            % levels are below the steady state tolerance
+            if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
+                steadyStatePeriod = i;
+                steadyStateLvl = steadyStateLvls(1,i);
+                fprintf('Steady State found in period %s\n', num2str(i));
+                break;
+            end
         end
     end
-    
     % Save the steady state of the current monte carlo iteration
     monteCarloSteadyState(monteInd) = steadyStateLvl;
     fprintf('Iteration %s ended with Steady State %s\n', ...
@@ -292,9 +295,7 @@ else
     plot(steadyStateLvls(1,:));
     plot(steadyStateLvls(2,:));
     plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    area = patch([steadyStatePeriod ...
-        -steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod ... 
-        steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
+    area = patch([steadyStatePeriod-steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
     alpha(area,.2)
     xlim([1 T]);
     ylim([-1 11]);
