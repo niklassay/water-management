@@ -128,29 +128,37 @@ if (useRealData)
 
     % Calculate the evaporation with the formula given in the literature
     % (average evaporation in mm per year)
-    e = ((700 .* (avgMeanTemp + 0.006 .* altitude) ./...
+    avgEvap = ((700 .* (avgMeanTemp + 0.006 .* altitude) ./...
     (100 - latitude) + 15 .* ((100 - avgHumidity) / 5))...
     ./ (80 - avgMeanTemp)) * 365.25; 
     
     % Exclude missing values
-    e = e(~isnan(e));
+    avgEvap = avgEvap(~isnan(avgEvap));
 
     % Scale the real data down to be sensible in this example
-    e = e / 900;
+    avgEvap = avgEvap / 900;
 
     % Expected value of the evaporation
-    E_Evap = mean(e);
+    E_Evap = mean(avgEvap);
 
     % Discretize and round the expected value of the evaporation to fit to
     % the grid
     dimE_Evap = round(E_Evap/(M/dimWL));
 else 
     % Use no evaporation
-    e = zeros(T,1);
+    avgEvap = zeros(T,1);
     dimE_Evap = 0;
 end
 
-[V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
+[V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, ...
+                                                valueFunctionMaxIter, ...
+                                                waterLevel, ...
+                                                dimE_Rain, ...
+                                                dimE_Evap, ...
+                                                utilFar, ...
+                                                utilRec, ...
+                                                beta, ...
+                                                valueFunctionTolerance);
 
 
 % Do not print all the diagrams if running monte carlo simulation
@@ -231,7 +239,7 @@ for monteInd=1:monteCarloMaxIter
         waterInd(i+1) = min(max(waterInd(i) ...
                             - irrigationInd(i) ...
                             + round(r(i)/(M/dimWL)) ...
-                            - round(e(i)/(M/dimWL)),1),dimWL);
+                            - round(avgEvap(i)/(M/dimWL)),1),dimWL);
         
         % Calculate the steady state level of the water reservoir
         if (i > steadyStateMeanPeriods)
@@ -307,7 +315,7 @@ else
     plot(waterLevel(waterInd));    
     plot(waterLevel(irrigationInd));
     plot(r);
-    plot(e);
+    plot(avgEvap);
     xlim([1 T]);
     legend('Water Level of the Reservoir','Water used for Irrigation',...
     'Rain','Evaporation');
@@ -366,7 +374,16 @@ else
     hold off
 end
 
-function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance)
+function [V, optIrrigation_ind, aux_farm, aux_rec] ...
+                                = ValueFunction(dimWL, ...
+                                                valueFunctionMaxIter, ...
+                                                waterLevel, ...
+                                                dimE_Rain, ...
+                                                dimE_Evap, ...
+                                                utilFar, ...
+                                                utilRec, ...
+                                                beta, ...
+                                                valueFunctionTolerance)
     %% Computation of the Value Function
 
     % Create a value function for the combined value of farmers and
@@ -378,21 +395,26 @@ function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueF
     for j = 1:valueFunctionMaxIter
         V_old = V;
 
-        % Create an auxiliary matrix for each water level and depending on that
-        % each possible amount of water to be used for irrigation. Then use
-        % the auxiliary matrix to find the maximum over all amounts of water
-        % used for irrigation for each water level in the reservoir
+        % Create an auxiliary matrix for each water level and depending on 
+        % that each possible amount of water to be used for irrigation. 
+        % Then use the auxiliary matrix to find the maximum over all 
+        % amounts of water used for irrigation for each water level in the 
+        % reservoir
         aux = zeros(dimWL, dimWL) + NaN;
         aux_farm = zeros(dimWL, dimWL) + NaN;
         aux_rec = zeros(dimWL, dimWL) + NaN;
         for iWL = 1:dimWL
             for iIrrigation = 1:iWL
-                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) +...
-                    utilRec(waterLevel(iWL), waterLevel(iIrrigation)) +...
-                    beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1),dimWL));
-                % Generate aux_farm and aux_rec for plotting in a later step 
-                aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
-                aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
+                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation))...
+                    + utilRec(waterLevel(iWL), waterLevel(iIrrigation)) ...
+                    + beta*V_old(min(max(iWL-iIrrigation ...
+                                        +1+dimE_Rain-dimE_Evap,1),dimWL));
+                % Generate aux_farm and aux_rec for plotting in a later 
+                % step 
+                aux_farm(iWL, iIrrigation) = utilFar(waterLevel( ...
+                                                iIrrigation));
+                aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), ...
+                                                waterLevel(iIrrigation));
             end
         end
         % Compute V and the optimum irrigation index (for each water level
@@ -400,8 +422,8 @@ function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueF
 
         [V, optIrrigation_ind]= max(aux,[],2);
 
-        % Termination check: break if the norm is smaller than the tolerance
-        % (excluding -inf values)
+        % Termination check: break if the norm is smaller than the 
+        % tolerance (excluding -inf values)
         if norm(V_old(V ~= -inf) - V(V ~= -inf)) < valueFunctionTolerance
             break;
         end
