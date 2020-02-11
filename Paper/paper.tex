@@ -140,7 +140,7 @@ Therefore, the optimal allocation and sustainable use of the available water wil
 
 \subsection{Assumptions and Conditions}
 
-In this work we want to examine the variations in use of water from a (hypothetical) water reservoir.
+In this work, we want to examine the variations in use of water from a (hypothetical) water reservoir.
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
 The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
 Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
@@ -382,10 +382,10 @@ Finally, we want to compute the value of the steady state by using a monte carlo
 	\end{figure}
 	\subsection{Steady State}
 	% TODO maybe move to theory?
-	In systems theory, a system or a process is in a steady state if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
+	In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
 	The variable defining the behavior of our system is the water level. 
 	Because of this, we have to calculate the difference in water level for each period. 
-	Due to the fact, that our water level highly depends on the randomly distributed rainfalls that rise up the water level at the end of each period, it is not possible to find a state steady. 
+	Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a state steady. % TODO: auch noch evaporation nennen?
 	To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
 	A exemplary graph of the mean in every period and the difference to its predecessor is shown in figure \ref{fig:steadyState}.
 	Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
