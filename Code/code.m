@@ -178,6 +178,8 @@ for j = 1:valueFunctionMaxIter
             aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
         end
     end
+    % Compute V and the optimum irrigation index (for each water level
+    % step) using the bellman equation
     [V, optIrrigation_ind]= max(aux,[],2);  
 
     % Termination check: break if the norm is smaller than the tolerance 
@@ -252,6 +254,9 @@ for monteInd=1:monteCarloMaxIter
     
     % Steady state levels
     steadyStateLvls = zeros(2, T);
+    % Initialize the steady state period with the amount of
+    % periods of the forward iteration in case no steady state will be
+    % found
     steadyStatePeriod = T;
     
     % Perform the forward iteration
