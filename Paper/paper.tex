@@ -291,7 +291,8 @@ where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
 
-\subsection{Implementation} % TODO: Better title?
+
+\subsection{Computation of the value function}
 
 In a first step, we want to compute the value function $V$ for each state $s$. 
 In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. 
@@ -323,7 +324,8 @@ V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 which equals to finding the column $aux$ that maximizes the expected value over all states (TODO: kann man das so sagen?).
 We repeat this step over and over again until the our value function $V$ converges (technically: the norm of the difference between $V'$ and $V$ falls below a certain tolerance value). \\
 
-Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
+% Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
+% TODO: hier steady state und monte carlo simulation erklären oder besser in results?
 
 
 
