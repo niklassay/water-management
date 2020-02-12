@@ -328,189 +328,189 @@ We repeat this step over and over again until the our value function $V$ converg
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 % TODO: hier steady state und monte carlo simulation erklären oder besser in results?
 
-	%------------------------------------------------
-	\newpage
-	\section{Results}
-	This chapter will discuss the outcomes and results of the implemented functionality in MATLAB.
-	The discussion will be started on the basic questions asked by the project description.
-	Furthermore we made several modifications to the task which will be discussed additionally.
-	All results will be visualized by plots made within our simulation in MATLAB.
-	\subsection{Optimal irrigation policy}
-	When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
-	The value function as posed in % TODO put links to theory here
-	contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
-	Figure \ref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/value_function.eps}
-		\caption{Value Function}
-		\label{fig:value-function}
-	\end{figure}
-	\newline
-	Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
-	The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
-	\begin{itemize}
-		\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
-		\item The diminishing margin utility of farmers lead to a decreasing gradient for the proposed irrigation amount with increasing water level.
-	\end{itemize}
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/OptimalIrrigationPolicy.eps}
-		\caption{Optimal Irrigation Policy}
-		\label{fig:optimal-irrigation-policy}
-	\end{figure}
-	\newpage
-	\subsection{Steady State}
-	% TODO maybe move to theory?
-	In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
-	The variable defining the behavior of our system is the water level. 
-	Because of this, we have to calculate the difference in water level for each period. 
-	Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a state steady. % TODO: auch noch evaporation nennen?
-	To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
-	A exemplary graph of the mean in every period and the difference to its predecessor is shown in figure \ref{fig:steadyState}.
-	Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
-	The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/steadyState.eps}
-		\caption{Exemplary Calculation of the Steady State}
-		\label{fig:steadyState}
-	\end{figure}
-	\subsection{Steady State Probability}
-	As mentioned above, the steady state changes from simulation to simulation.
-	In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
-	To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
-	We then counted the occurrences, normalized them and calculated the corresponding probability.
-	The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
-	The highest possibility for a steady state is around 4.2. 
-	In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
-	The curve resembles a normal distribution. 
-	
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
-		\caption{Steady State Probability}
-		\label{fig:steadyStateMonteCarlo}
-	\end{figure}
-	\subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
-	When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
-	Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
-	A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
-	This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
-	One can say that a high $\beta$ prefers a long-term policy while a smaller $\beta$ leads to a rather short-term policy.
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/optimum-policy-over-beta.eps}
-		\caption{Optimal irrigation policy as a function of the discount factor $\beta$}
-		\label{fig:optimal-irrigation-beta}
-	\end{figure}
-	\newpage
-	\subsection{Changed Volatility of Rainfalls}
-	A more volatile rainfall means a rainfall having a higher standard deviation.
-	Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
-	Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. 
-	(See \ref{eq:rainfall} for reference) 
-	\begin{equation}
-		mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
-	\end{equation} 
-	Both distributions are visualized in \ref{fig:rain-distributions}.
-	\begin{figure}
-		\begin{subfigure}{0.5\textwidth}
-			\centering
-			\includegraphics[width=1\textwidth]{figures/rainfall-default.eps}
-			\caption{$\mu=0, \sigma=1$}
-			\label{fig:rainfall-default}
-		\end{subfigure}%
-		\begin{subfigure}{.5\textwidth}
-			\centering
-			\includegraphics[width=1\textwidth]{figures/rainfall-more-volatile.eps}
-			\caption{$\mu=-1.5, \sigma=2$}
-			\label{fig:rainfall-changed}
-		\end{subfigure}
-		\caption{Different Rain Distributions}
-		\label{fig:rain-distributions}
-	\end{figure}
-	\newpage
-	\begin{figure}[ht]
-		\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-default.eps}
-		\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma=1)$}
-		\label{fig:aggregated-use-rainfall-default}
-	\end{figure}
-	\begin{figure}[ht]
-	\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-more-volatile.eps}
-	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma=2)$}
-	\label{fig:aggregated-use-rainfall-more-volatile}
-	\end{figure}
-	\ref{fig:aggregated-use-rainfall-default} shows the aggregated use of a lognormal distributed rainfall including the water level, the amount of water used for irrigation in the rain exemplary for 100 periods. \ref{fig:aggregated-use-rainfall-more-volatile} does the same for a changed lognormal distribution parameterized with $\mu=-1.5$ and $\sigma=2$.
-	When comparing both visualizations, it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
-	As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
-	In such periods the farmers use almost no water for irrigation.
-	The aggregated use of farmers and recreational users drops significantly.
-	Since the reservoir is capped at a amount of 7, the high peaks of rainfall can not be used to a large extent to fill up the reservoir.
-	Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
-	This effect is reflected in the aggregated use as well. 
-	The Use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
-	\clearpage	
-	\newpage
-	\printbibliography
+%------------------------------------------------
+\newpage
+\section{Results}
+This chapter will discuss the outcomes and results of the implemented functionality in MATLAB.
+The discussion will be started on the basic questions asked by the project description.
+Furthermore we made several modifications to the task which will be discussed additionally.
+All results will be visualized by plots made within our simulation in MATLAB.
+\subsection{Optimal irrigation policy}
+When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
+The value function as posed in % TODO put links to theory here
+contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
+Figure \ref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/value_function.eps}
+	\caption{Value Function}
+	\label{fig:value-function}
+\end{figure}
+\newline
+Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
+The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
+\begin{itemize}
+	\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
+	\item The diminishing margin utility of farmers lead to a decreasing gradient for the proposed irrigation amount with increasing water level.
+\end{itemize}
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/OptimalIrrigationPolicy.eps}
+	\caption{Optimal Irrigation Policy}
+	\label{fig:optimal-irrigation-policy}
+\end{figure}
+\newpage
+\subsection{Steady State}
+% TODO maybe move to theory?
+In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
+The variable defining the behavior of our system is the water level. 
+Because of this, we have to calculate the difference in water level for each period. 
+Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a state steady. % TODO: auch noch evaporation nennen?
+To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
+A exemplary graph of the mean in every period and the difference to its predecessor is shown in figure \ref{fig:steadyState}.
+Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
+The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/steadyState.eps}
+	\caption{Exemplary Calculation of the Steady State}
+	\label{fig:steadyState}
+\end{figure}
+\subsection{Steady State Probability}
+As mentioned above, the steady state changes from simulation to simulation.
+In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
+To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
+We then counted the occurrences, normalized them and calculated the corresponding probability.
+The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
+The highest possibility for a steady state is around 4.2. 
+In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
+The curve resembles a normal distribution. 
 
-	\newpage
-	
-	
-	%----------------------------------------------------------------------------------------
-	%	STATUTORY DECLARATION IN LIEU OF AN OATH
-	%----------------------------------------------------------------------------------------
-	
-	\begingroup
-	\begin{center}
-		\large
-		\textbf{Eidesstattliche Versicherung}
-	\end{center}
-	
-	\vspace{0.3cm}
-	
-	\begin{tabular}{@{}p{8cm}p{5.8cm}}
-		\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
-		\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
-	\end{tabular}
-	\vspace{0.3cm}
-	
-	Ich versichere hiermit an Eides Statt, dass ich die vorliegende Arbeit mit dem Titel
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
+	\caption{Steady State Probability}
+	\label{fig:steadyStateMonteCarlo}
+\end{figure}
+\subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
+When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
+Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
+A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
+This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
+One can say that a high $\beta$ prefers a long-term policy while a smaller $\beta$ leads to a rather short-term policy.
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/optimum-policy-over-beta.eps}
+	\caption{Optimal irrigation policy as a function of the discount factor $\beta$}
+	\label{fig:optimal-irrigation-beta}
+\end{figure}
+\newpage
+\subsection{Changed Volatility of Rainfalls}
+A more volatile rainfall means a rainfall having a higher standard deviation.
+Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
+Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. 
+(See \ref{eq:rainfall} for reference) 
+\begin{equation}
+	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
+\end{equation} 
+Both distributions are visualized in \ref{fig:rain-distributions}.
+\begin{figure}
+	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{figures/rainfall-default.eps}
+		\caption{$\mu=0, \sigma=1$}
+		\label{fig:rainfall-default}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		\includegraphics[width=1\textwidth]{figures/rainfall-more-volatile.eps}
+		\caption{$\mu=-1.5, \sigma=2$}
+		\label{fig:rainfall-changed}
+	\end{subfigure}
+	\caption{Different Rain Distributions}
+	\label{fig:rain-distributions}
+\end{figure}
+\newpage
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-default.eps}
+	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma=1)$}
+	\label{fig:aggregated-use-rainfall-default}
+\end{figure}
+\begin{figure}[ht]
+\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-more-volatile.eps}
+\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma=2)$}
+\label{fig:aggregated-use-rainfall-more-volatile}
+\end{figure}
+\ref{fig:aggregated-use-rainfall-default} shows the aggregated use of a lognormal distributed rainfall including the water level, the amount of water used for irrigation in the rain exemplary for 100 periods. \ref{fig:aggregated-use-rainfall-more-volatile} does the same for a changed lognormal distribution parameterized with $\mu=-1.5$ and $\sigma=2$.
+When comparing both visualizations, it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
+As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
+In such periods the farmers use almost no water for irrigation.
+The aggregated use of farmers and recreational users drops significantly.
+Since the reservoir is capped at a amount of 7, the high peaks of rainfall can not be used to a large extent to fill up the reservoir.
+Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
+This effect is reflected in the aggregated use as well. 
+The Use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
+\clearpage	
+\newpage
+\printbibliography
 
-	\begin{center}
-		{\makeatletter{\emph{{\@title}}}\makeatother}
-	\end{center}
-	
-	selbständig und ohne unzulässige fremde Hilfe erbracht habe. Ich habe keine anderen als die angegebenen Quellen und Hilfsmittel benutzt. Für den Fall, dass die Arbeit zusätzlich auf einem Datenträger eingereicht wird, erkläre ich, dass die schriftliche und die elektronische Form vollständig übereinstimmen. Die Arbeit hat in gleicher oder ähnlicher Form noch keiner Prüfungsbehörde vorgelegen.
-	
-	\vspace{0.6cm}
-	
-	\begin{tabular}{@{}p{8cm}p{5.8cm}}
-		\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
-		Ort, Datum & Unterschrift \\
-	\end{tabular}
-	
-	\vspace{0.6cm}
+\newpage
 
-	\begin{small}
-		\textbf{Belehrung:}\\
-		Wer vorsätzlich gegen eine die Täuschung über Prüfungsleistungen betreffende Regelung einer Hochschulprüfungsordnung verstößt, handelt ordnungswidrig. Die Ordnungswidrigkeit kann mit einer Geldbuße bis zu 50 000 Euro geahndet werden. Zuständige Verwaltungsbehörde für die Verfolgung und Ahndung von Ordnungswidrigkeiten ist die Kanzlerin oder der Kanzler der RWTH Aachen. Im Falle eines mehrfachen oder sonstigen schwerwiegenden Täuschungsversuches kann der Prüfling zudem exmatrikuliert werden (§ 63 Abs. 5 HG NRW).
-		
-		\textbf{§ 156 StGB: Falsche Versicherung an Eides Statt}\\
-		Wer vor einer zur Abnahme einer Versicherung an Eides Statt zuständigen Behörde eine solche Versicherung falsch abgibt oder unter Berufung auf eine solche Versicherung falsch aussagt, wird mit Freiheitsstrafe bis zu drei Jahren oder mit Geldstrafe bestraft.
-		
-		\textbf{§ 161 StGB: Fahrlässiger Falscheid; fahrlässige falsche Versicherung an Eides Statt}\\
-		(1) Wenn eine der in den §§ 154 bis 156 bezeichneten Handlungen aus Fahrlässigkeit begangen worden ist, so tritt Freiheitsstrafe bis zu einem Jahr oder Geldstrafe ein.\\
-		(2) Straflosigkeit tritt ein, wenn der Täter die falsche Angabe rechtzeitig berichtigt. Die Vorschriften des § 158 Abs. 2 und 3 gelten entsprechend
-	\end{small}
 
-	\vspace{0.6cm}
+%----------------------------------------------------------------------------------------
+%	STATUTORY DECLARATION IN LIEU OF AN OATH
+%----------------------------------------------------------------------------------------
+
+\begingroup
+\begin{center}
+	\large
+	\textbf{Eidesstattliche Versicherung}
+\end{center}
+
+\vspace{0.3cm}
+
+\begin{tabular}{@{}p{8cm}p{5.8cm}}
+	\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
+	\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
+\end{tabular}
+\vspace{0.3cm}
+
+Ich versichere hiermit an Eides Statt, dass ich die vorliegende Arbeit mit dem Titel
+
+\begin{center}
+	{\makeatletter{\emph{{\@title}}}\makeatother}
+\end{center}
+
+selbständig und ohne unzulässige fremde Hilfe erbracht habe. Ich habe keine anderen als die angegebenen Quellen und Hilfsmittel benutzt. Für den Fall, dass die Arbeit zusätzlich auf einem Datenträger eingereicht wird, erkläre ich, dass die schriftliche und die elektronische Form vollständig übereinstimmen. Die Arbeit hat in gleicher oder ähnlicher Form noch keiner Prüfungsbehörde vorgelegen.
+
+\vspace{0.6cm}
+
+\begin{tabular}{@{}p{8cm}p{5.8cm}}
+	\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+\end{tabular}
+
+\vspace{0.6cm}
+
+\begin{small}
+	\textbf{Belehrung:}\\
+	Wer vorsätzlich gegen eine die Täuschung über Prüfungsleistungen betreffende Regelung einer Hochschulprüfungsordnung verstößt, handelt ordnungswidrig. Die Ordnungswidrigkeit kann mit einer Geldbuße bis zu 50 000 Euro geahndet werden. Zuständige Verwaltungsbehörde für die Verfolgung und Ahndung von Ordnungswidrigkeiten ist die Kanzlerin oder der Kanzler der RWTH Aachen. Im Falle eines mehrfachen oder sonstigen schwerwiegenden Täuschungsversuches kann der Prüfling zudem exmatrikuliert werden (§ 63 Abs. 5 HG NRW).
 	
-	Die vorstehende Belehrung habe ich zur Kenntnis genommen:
+	\textbf{§ 156 StGB: Falsche Versicherung an Eides Statt}\\
+	Wer vor einer zur Abnahme einer Versicherung an Eides Statt zuständigen Behörde eine solche Versicherung falsch abgibt oder unter Berufung auf eine solche Versicherung falsch aussagt, wird mit Freiheitsstrafe bis zu drei Jahren oder mit Geldstrafe bestraft.
 	
-	\vspace{0.6cm}
-	
-	\begin{tabular}{@{}p{8cm}p{5.8cm}}
-		\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
-		Ort, Datum & Unterschrift \\
-	\end{tabular}
-	
-	\endgroup
-	\clearpage
+	\textbf{§ 161 StGB: Fahrlässiger Falscheid; fahrlässige falsche Versicherung an Eides Statt}\\
+	(1) Wenn eine der in den §§ 154 bis 156 bezeichneten Handlungen aus Fahrlässigkeit begangen worden ist, so tritt Freiheitsstrafe bis zu einem Jahr oder Geldstrafe ein.\\
+	(2) Straflosigkeit tritt ein, wenn der Täter die falsche Angabe rechtzeitig berichtigt. Die Vorschriften des § 158 Abs. 2 und 3 gelten entsprechend
+\end{small}
+
+\vspace{0.6cm}
+
+Die vorstehende Belehrung habe ich zur Kenntnis genommen:
+
+\vspace{0.6cm}
+
+\begin{tabular}{@{}p{8cm}p{5.8cm}}
+	\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+\end{tabular}
+
+\endgroup
+\clearpage
 	
 \end{document}
