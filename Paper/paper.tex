@@ -457,21 +457,26 @@ The use of more volatile rainfall is much lower compared to rainfall parameteriz
 \ref{fig:rainfall-real-data} shows the distribution of rain from a real data set. 
 Comparing this with \ref{fig:rainfall-default} shows a similar shape of the distribution. 
 Since there are only 65 periods within the real data set is not as well distributed as in the lognormal distributed simulation.
-\begin{wrapfigure}{l}{0.5\textwidth} 
-	\includegraphics[width=0.5\textwidth]{figures/rainfall-real-data.eps}
+\begin{figure}[h]
+\begin{subfigure}{0.5\textwidth}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/rainfall-real-data.eps}
 	\caption{Rainfall Distribution from Real Data}
 	\label{fig:rainfall-real-data}
-\end{wrapfigure}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/optimalIrrigationPolicy-real-data.eps}
+	\caption{Optimal Irrigation Policy with Real Data}
+	\label{fig:optimalIrrigationPolicy-real-data}
+\end{subfigure}
+\end{figure}
 In the real data set there are no periods with (almost) no rain while in our simulation there are.
 As we can learn from our dataset this assumption is not realistic.
 Since the amount of rain is scaled down to match our model, there is no comparison between means of the model possible.
 Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls.
-As shown in \ref{fig:optimalIrrigationPolicy-real-data} the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends ocn the expected amount of rain.
-\begin{wrapfigure}{l}{0.5\textwidth} 
-	\includegraphics[width=0.5\textwidth]{figures/optimalIrrigationPolicy-real-data.eps}
-	\caption{Optimal Irrigation Policy with Real Data}
-	\label{fig:optimalIrrigationPolicy-real-data}
-\end{wrapfigure}
+As shown in \ref{fig:optimalIrrigationPolicy-real-data} the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends on the expected amount of rain.
+Due to the higher expected value of rainfalls the optimal irrigation policy is steeper over the water level compared to the simulated rainfall.
 
 \clearpage	
 \newpage
