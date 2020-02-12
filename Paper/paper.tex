@@ -426,6 +426,27 @@ We repeat this step over and over again until the our value function $V$ converg
 		\label{fig:rain-distributions}
 	\end{figure}
 	\newpage
+	\begin{figure}[ht]
+		\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-default.eps}
+		\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma=1)$}
+		\label{fig:aggregated-use-rainfall-default}
+	\end{figure}
+	\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-more-volatile.eps}
+	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma=2)$}
+	\label{fig:aggregated-use-rainfall-more-volatile}
+	\end{figure}
+	\ref{fig:aggregated-use-rainfall-default} shows the aggregated use of a lognormal distributed rainfall including the water level, the amount of water used for irrigation in the rain exemplary for 100 periods. \ref{fig:aggregated-use-rainfall-more-volatile} does the same for a changed lognormal distribution parameterized with $\mu=-1.5$ and $\sigma=2$.
+	When comparing both visualizations, it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
+	As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
+	In such periods the farmers use almost no water for irrigation.
+	The aggregated use of farmers and recreational users drops significantly.
+	Since the reservoir is capped at a amount of 7, the high peaks of rainfall can not be used to a large extent to fill up the reservoir.
+	Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
+	This effect is reflected in the aggregated use as well. 
+	The Use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
+	\clearpage	
+	\newpage
 	\printbibliography
 
 	\newpage
