@@ -209,6 +209,16 @@ for monteInd=1:monteCarloMaxIter
         r = exp(mu + sigma.*randn(T,1));
     end
     
+    figure(11)
+    set(gcf,'Units','Centimeters','position',[0,0,8,8]);
+    edges = [0:0.05:7];
+    hold on
+    histogram(r, edges, 'Normalization', 'Probability')
+    title('Probability of Rainfall');
+    ylabel('Probability');
+    xlabel('Amount of Rain');
+    hold off
+    
     % Overwrite T to match available data points if using real data
     if (useRealData)
         T = size(r,1);
@@ -372,6 +382,28 @@ else
     title('Optimal Irrigation Policy')
     xlabel('Water Level of the Reservoir')
     ylabel('Irrigation Amount')
+    hold off
+    
+    % Plot the aggregated use for farmers and recreational users
+    figure(10)
+    hold on
+    set(gca,'FontSize',12)
+    set(gcf,'Units','Centimeters','position',[0,0,16,8]);
+    %title('Aggreated Use for Farmers and Recreational Users');
+    yyaxis left;
+    plot(utilRec(waterLevel(waterInd(:, 1:1000)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd)),'color','#A2142F');
+    ylabel('Use');
+    ylim([-100 0]);
+    yyaxis right;
+    plot(waterLevel(waterInd),'-', 'color', '#0072BD');
+    plot(waterLevel(irrigationInd),'-','color','#D95319');
+    plot(r,'-','color','#EDB120');
+    ylabel('Amount');
+    ylim([0 10]);
+    legend('Aggregated Use','Water Level of the Reservoir','Water used for Irrigation',...
+    'Rain');
+    xlim([1 100]);
+    xlabel('Period');
     hold off
 end
 
