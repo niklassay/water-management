@@ -46,6 +46,7 @@
 
 \usepackage{graphicx} % for figures
 \usepackage{subcaption}
+\usepackage{wrapfig}
 
 \usepackage{longtable}
 
@@ -209,6 +210,7 @@ We do this by using a  $\sigma^2$ of x.
 Instead of simulating the rainfall with random numbers, we also use real data.
 Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
 We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
+% TODO describe how we fitted them to match the rainfall distribution
 
 \subsubsection{Modification 4: Taking Evaporation into Account}
 The evaporation of water from a water reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}.
@@ -444,7 +446,29 @@ The aggregated use of farmers and recreational users drops significantly.
 Since the reservoir is capped at a amount of 7, the high peaks of rainfall can not be used to a large extent to fill up the reservoir.
 Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
 This effect is reflected in the aggregated use as well. 
-The Use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
+The use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
+% TODO changed irrigation policy?
+\clearpage
+\subsection{Using Real Data for Rainfall}
+\ref{fig:rainfall-real-data} shows the distribution of rain from a real data set. 
+Comparing this figure with \ref{fig:rainfall-default} shows a similar shape of the distribution. 
+Since there are only 65 periods within the real data set is not as well distributed as in the lognormal distributed simulation.
+\begin{wrapfigure}{l}{0.5\textwidth} 
+	\includegraphics[width=0.5\textwidth]{figures/rainfall-real-data.eps}
+	\caption{Rainfall Distribution from Real Data}
+	\label{fig:rainfall-real-data}
+\end{wrapfigure}
+In the real data set there are no periods with (almost) no rain while in our simulation there are.
+As we can learn from our dataset this assumption is not realistic.
+Since the amount of rain is scaled down to match our model, there is no comparison between means of the model possible.
+Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls.
+As shown in the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends on the expected amount of rain.
+\begin{wrapfigure}{l}{0.5\textwidth} 
+	\includegraphics[width=0.5\textwidth]{figures/optimalIrrigationPolicy-real-data.eps}
+	\caption{Optimal Irrigation Policy with Real Data}
+	\label{fig:optimalIrrigationPolicy-real-data}
+\end{wrapfigure}
+
 \clearpage	
 \newpage
 \printbibliography
