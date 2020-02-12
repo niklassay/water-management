@@ -48,6 +48,8 @@
 \usepackage{subcaption}
 \usepackage{wrapfig}
 
+\usepackage[noabbrev]{cleveref}
+
 \usepackage{longtable}
 
 % packages used for citations
@@ -66,6 +68,8 @@ natbib=true
 %----------------------------------------------------------------------------------------
 
 \begin{document}
+	\let\origref\ref % The original \ref command is now accessible by \origref
+	\let\ref\cref    % The command \ref uses \cref from the cleveref package now
 	
 	%----------------------------------------------------------------------------------------
 	%	COVER SHEET
@@ -146,7 +150,7 @@ In this work, we want to examine the variations in use of water from a (hypothet
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
 The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
 Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
-The sequence of events for every period is displayed in figure ~\ref{fig:Sequence}.
+The sequence of events for every period is displayed in ~\ref{fig:Sequence}.
 At the beginning of every year (Step 1) we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
@@ -341,14 +345,14 @@ All results will be visualized by plots made within our simulation in MATLAB.
 When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
 The value function as posed in % TODO put links to theory here
 contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
-Figure \ref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
+Figure \origref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/value_function.eps}
 	\caption{Value Function}
 	\label{fig:value-function}
 \end{figure}
 \newline
-Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in figure \ref{fig:optimal-irrigation-policy}.
+Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in \ref{fig:optimal-irrigation-policy}.
 The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
 \begin{itemize}
 	\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
@@ -367,7 +371,7 @@ The variable defining the behavior of our system is the water level.
 Because of this, we have to calculate the difference in water level for each period. 
 Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a state steady. % TODO: auch noch evaporation nennen?
 To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
-A exemplary graph of the mean in every period and the difference to its predecessor is shown in figure \ref{fig:steadyState}.
+A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
 Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
 The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
 \begin{figure}[ht]
@@ -380,7 +384,7 @@ As mentioned above, the steady state changes from simulation to simulation.
 In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
 To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
 We then counted the occurrences, normalized them and calculated the corresponding probability.
-The result is put in a histogram and shown in figure \ref{fig:steadyStateMonteCarlo}.
+The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
 The highest possibility for a steady state is around 4.2. 
 In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
 The curve resembles a normal distribution. 
@@ -451,7 +455,7 @@ The use of more volatile rainfall is much lower compared to rainfall parameteriz
 \clearpage
 \subsection{Using Real Data for Rainfall}
 \ref{fig:rainfall-real-data} shows the distribution of rain from a real data set. 
-Comparing this figure with \ref{fig:rainfall-default} shows a similar shape of the distribution. 
+Comparing this with \ref{fig:rainfall-default} shows a similar shape of the distribution. 
 Since there are only 65 periods within the real data set is not as well distributed as in the lognormal distributed simulation.
 \begin{wrapfigure}{l}{0.5\textwidth} 
 	\includegraphics[width=0.5\textwidth]{figures/rainfall-real-data.eps}
@@ -462,7 +466,7 @@ In the real data set there are no periods with (almost) no rain while in our sim
 As we can learn from our dataset this assumption is not realistic.
 Since the amount of rain is scaled down to match our model, there is no comparison between means of the model possible.
 Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls.
-As shown in the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends on the expected amount of rain.
+As shown in \ref{fig:optimalIrrigationPolicy-real-data} the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends ocn the expected amount of rain.
 \begin{wrapfigure}{l}{0.5\textwidth} 
 	\includegraphics[width=0.5\textwidth]{figures/optimalIrrigationPolicy-real-data.eps}
 	\caption{Optimal Irrigation Policy with Real Data}
