@@ -150,7 +150,7 @@ In this work, we want to examine the variations in use of water from a (hypothet
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
 The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
 Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
-The sequence of events for every period is displayed in ~\ref{fig:Sequence}.
+The sequence of events for every period is displayed in \ref{fig:Sequence}.
 At the beginning of every year (Step 1) we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
@@ -168,7 +168,7 @@ This can be described by the recreational users' utility function which is
 \end{equation}
 
 with the additional paramter $s$ that indicates the water level at the beginning of the year.
-For recreational users, the preference parameters shell be $a_2 = 2$ and $b_2 = -3$.\\\\
+For recreational users, the preference parameters shall be $a_2 = 2$ and $b_2 = -3$.\\\\
 
 At the end of the year, water in the reservoir is replenished by rainfall (Step 3), which we can assume to be randomly following a lognormal distribution \citep{oosterbaan1994frequency}:
 \begin{equation}
@@ -275,7 +275,7 @@ A more sophisticated way to determine the area of an unbounded integral is to us
 	\int_{-\infty}^{\infty} f(x)e^{-x^2} dx \approx \sum_{i=1}^{n}{w_if(x_i)}
 	\end{equation}
 
-where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the nth Hermite polynomial. (\cite{seminar:week6})
+where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the n-th Hermite polynomial. (\cite{seminar:week6})
 
 \subsection{Dynamic Programming}
 
@@ -303,13 +303,14 @@ So the value of the control variable to be set is the one that maximizes both th
 
 In a first step, we want to compute the value function $V$ for each state $s$. 
 In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. 
-Obviously, the $aux$ matrix can only a finite, discrete amount of values. In this work, a resolution of $n = 1000$ different water levels and irrigation amounts should suffice. 
+Obviously, the $aux$ matrix can only contain a finite, discrete amount of values. In this work, a resolution of $n = 1000$ different water levels and irrigation amounts should suffice. 
 Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
 
 	\begin{equation}
 s = \left( \begin{array}{c}0\\...\\7\end{array}\right),\hspace{2mm}x = \left( \begin{array}{c}0\\...\\7\end{array}\right)
 \end{equation}
 
+% TODO das scheint mir nicht so ganz korrekt zu sein. Meint ihr die Dimension?
 Note that the maximum reservoir capacity is $7$ and $|s|=|x| = n = 1000$. 
 
 For a combined utility of the farmers and the recreational users  $u(s_i,x_j) = F(x_j) + G(s_i,x_j)$, depending on the water level $s_i$ and the amount of irrigation $x_i$ we get an auxiliary matrix
@@ -327,9 +328,11 @@ Here, $V'$ represents the value for $V$ in the previous iteration and will be se
 \begin{equation}
 V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 \end{equation}
+\label{eq:value-function}
 
 which equals to finding the column $aux$ that maximizes the expected value over all states (TODO: kann man das so sagen?).
-We repeat this step over and over again until the our value function $V$ converges (technically: the norm of the difference between $V'$ and $V$ falls below a certain tolerance value). \\
+We repeat this step over and over again until the our value function $V$ converges.
+In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value) \\
 
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 % TODO: hier steady state und monte carlo simulation erklären oder besser in results?
@@ -343,8 +346,7 @@ Furthermore we made several modifications to the task which will be discussed ad
 All results will be visualized by plots made within our simulation in MATLAB.
 \subsection{Optimal irrigation policy}
 When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
-The value function as posed in % TODO put links to theory here
-contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
+The value function as posed in \ref{eq:value-function} contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
 Figure \origref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/value_function.eps}
@@ -352,7 +354,7 @@ Figure \origref{fig:value-function} shows the value function calculated for all 
 	\label{fig:value-function}
 \end{figure}
 \newline
-Every value along the possible water levels leads to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in \ref{fig:optimal-irrigation-policy}.
+Every value along the possible water levels is mapped to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in \ref{fig:optimal-irrigation-policy}.
 The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
 \begin{itemize}
 	\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
@@ -369,8 +371,8 @@ The plot shows a rising proposed irrigation amount with rising water level. Ther
 In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
 The variable defining the behavior of our system is the water level. 
 Because of this, we have to calculate the difference in water level for each period. 
-Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a state steady. % TODO: auch noch evaporation nennen?
-To accomplish this, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
+Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. % TODO: auch noch evaporation nennen?
+To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
 A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
 Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
 The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
