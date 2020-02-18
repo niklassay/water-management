@@ -154,42 +154,6 @@ end
                                                 dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
 
 
-% Do not print all the diagrams if running monte carlo simulation
-% Note: figures 6 and 7 require manual panning and zooming in order to
-% see the details
-if(~useMonteCarloSimulation)
-    % Plot the auxiliary matrix of the farmers
-    figure(6)
-    hold on
-    surf(aux_farm);
-    colormap(jet);
-    title('Auxiliary Matrix of the Farmers');
-    xlabel('Amount of Water Used For Irrigation');
-    ylabel('Amount of Water in the Reservoir');
-    zlabel('Value');
-    hold off
-    
-    % Plot the auxiliary matrix of the recreational user
-    figure(7)
-    hold on
-    surf(aux_rec);
-    colormap(jet);
-    title('Auxiliary Matrix of the Recreational Users');
-    xlabel('Amount of Water Used For Irrigation');
-    ylabel('Amount of Water in the Reservoir');
-    zlabel('Value');
-    hold off
-
-    % Plot the value function
-    figure(1)
-    hold on
-    plot(waterLevel,V(:));
-    title('Value Function');
-    xlabel('Water Level');
-    ylabel('Maximum Value V');
-    axis([0 M -20 0]);
-    hold off
-end
 
 %% (Monte Carlo) Simulation for the Steady State
 
@@ -201,16 +165,6 @@ for monteInd=1:monteCarloMaxIter
         % Use lognormal distributed rainfall
         r = exp(mu + sigma.*randn(T,1));
     end
-    
-    figure(11)
-    set(gcf,'Units','Centimeters','position',[0,0,8,8]);
-    edges = [0:0.05:7];
-    hold on
-    histogram(r, edges, 'Normalization', 'Probability')
-    title('Probability of Rainfall');
-    ylabel('Probability');
-    xlabel('Amount of Rain');
-    hold off
     
     % Overwrite T to match available data points if using real data
     if (useRealData)
@@ -277,6 +231,9 @@ for monteInd=1:monteCarloMaxIter
              num2str(monteInd), num2str(steadyStateLvl));
 end
 
+
+%% plots
+
 if(useMonteCarloSimulation)
     edges = [0:0.1:7];
     % Plot monte carlo steady states
@@ -288,25 +245,14 @@ if(useMonteCarloSimulation)
     xlabel('Water Level in of the Reservoir');
     hold off
 else
-    % Plot simulation steady state
-    figure(8)
+    % Plot the value function
+    figure(1)
     hold on
-    plot(waterLevel(waterInd));
-    plot(steadyStateLvls(1,:));
-    plot(steadyStateLvls(2,:));
-    plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
-    area = patch([steadyStatePeriod-steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
-    alpha(area,.2)
-    xlim([1 T]);
-    ylim([-1 11]);
-    legend('Water Level of the Reservoir',append('Mean last ', ... 
-        num2str(steadyStateMeanPeriods), ' Periods'), ...
-        'Difference in Mean to previous', 'Steady State Level');
-    title('Steady State of Water Level');
-    xlabel('Period');
-    ylabel('Amount');
-    set(gca,'FontSize',12)
-    set(gcf,'Units','Centimeters','position',[0,0,16,12]);
+    plot(waterLevel,V(:));
+    title('Value Function');
+    xlabel('Water Level');
+    ylabel('Maximum Value V');
+    axis([0 M -20 0]);
     hold off
     
     % Plot water level, amount of water used for irrigation, rainfall and
@@ -358,11 +304,58 @@ else
     xlabel('Period');
     ylabel('Amount');
     hold off
+    
+    % Note: figures 6 and 7 require manual panning and zooming in order to
+    % see the details
 
-    colormap_jet = colormap(parula);
+    % Plot the auxiliary matrix of the farmers
+    figure(6)
+    hold on
+    surf(aux_farm);
+    colormap(jet);
+    title('Auxiliary Matrix of the Farmers');
+    xlabel('Amount of Water Used For Irrigation');
+    ylabel('Amount of Water in the Reservoir');
+    zlabel('Value');
+    hold off
+    
+    % Plot the auxiliary matrix of the recreational user
+    figure(7)
+    hold on
+    surf(aux_rec);
+    colormap(jet);
+    title('Auxiliary Matrix of the Recreational Users');
+    xlabel('Amount of Water Used For Irrigation');
+    ylabel('Amount of Water in the Reservoir');
+    zlabel('Value');
+    hold off
+
+    % Plot simulation steady state
+    figure(8)
+    hold on
+    plot(waterLevel(waterInd));
+    plot(steadyStateLvls(1,:));
+    plot(steadyStateLvls(2,:));
+    plot([1 T],[steadyStateLvl steadyStateLvl],'--g');
+    area = patch([steadyStatePeriod-steadyStateMeanPeriods steadyStatePeriod steadyStatePeriod steadyStatePeriod-steadyStateMeanPeriods],[0 0 7 7],'r');
+    alpha(area,.2)
+    xlim([1 T]);
+    ylim([-1 11]);
+    legend('Water Level of the Reservoir',append('Mean last ', ... 
+        num2str(steadyStateMeanPeriods), ' Periods'), ...
+        'Difference in Mean to previous', 'Steady State Level');
+    title('Steady State of Water Level');
+    xlabel('Period');
+    ylabel('Amount');
+    set(gca,'FontSize',12)
+    set(gcf,'Units','Centimeters','position',[0,0,16,12]);
+    hold off
+    
+    
     % Plot optimal irrigation policy
     figure(9)
     hold on
+    colormap_jet = colormap(parula);
     for beta=0.95:-0.05:0.95
         % Computation of the Value Function
         [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
@@ -394,8 +387,21 @@ else
     xlim([1 100]);
     xlabel('Period');
     hold off
+    
+    figure(11)
+    set(gcf,'Units','Centimeters','position',[0,0,8,8]);
+    edges = [0:0.05:7];
+    hold on
+    histogram(r, edges, 'Normalization', 'Probability')
+    title('Probability of Rainfall');
+    ylabel('Probability');
+    xlabel('Amount of Rain');
+    hold off
 end
 
+
+
+%% Computation of the Value Function
 function [V, optIrrigation_ind, aux_farm, aux_rec] ...
                                 = ValueFunction(dimWL, ...
                                                 valueFunctionMaxIter, ...
@@ -406,7 +412,6 @@ function [V, optIrrigation_ind, aux_farm, aux_rec] ...
                                                 utilRec, ...
                                                 beta, ...
                                                 valueFunctionTolerance)
-    %% Computation of the Value Function
 
     % Create a value function for the combined value of farmers and
     % recreational users for each water level, respecting the discounted value
