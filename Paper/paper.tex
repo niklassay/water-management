@@ -366,7 +366,7 @@ The plot shows a rising proposed irrigation amount with rising water level. Ther
 In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \citep{gagniuc2017markov}. 
 The variable defining the behavior of our system is the water level. 
 Because of this, we have to calculate the difference in water level for each period. 
-Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. % TODO: auch noch evaporation nennen?
+Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. 
 To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1*10^{-7}$ from a period to the next.
 A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
 Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
@@ -451,7 +451,6 @@ The use of more volatile rainfall is much lower compared to rainfall parameteriz
 % TODO changed irrigation policy?
 \clearpage
 \subsection{Using Real Data for Rainfall}
-%TODO update figures
 Figure \origref{fig:rainfall-real-data} shows the distribution of rain from a real data set.
 Comparing this with \ref{fig:rainfall-default} shows a similar shape of the distribution. 
 Since there are only 65 periods within the real data set is not as well distributed as in the lognormal distributed simulation.
