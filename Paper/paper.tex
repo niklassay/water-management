@@ -55,7 +55,7 @@
 % packages used for citations
 \usepackage[
 backend=bibtex,
-style=alphabetic,
+style=ieee,
 citestyle=authoryear,
 natbib=true
 ]{biblatex}
@@ -210,7 +210,7 @@ We do this by using a  $\sigma^2$ of x.
 \subsubsection{Modification 3: Using Real Data for Rainfall}
 Instead of simulating the rainfall with random numbers, we also use real data.
 Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
-We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
+We use a dataset aquired from \citep{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
 % TODO describe how we fitted them to match the rainfall distribution
 
 \subsubsection{Modification 4: Taking Evaporation into Account} \label{sec:intro-mod4}
@@ -272,7 +272,7 @@ A more sophisticated way to determine the area of an unbounded integral is to us
 	\int_{-\infty}^{\infty} f(x)e^{-x^2} dx \approx \sum_{i=1}^{n}{w_if(x_i)}
 	\end{equation}
 
-where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the n-th Hermite polynomial. (\cite{seminar:week6})
+where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the n-th Hermite polynomial \citep{seminar:week6}.
 
 \subsection{Dynamic Programming}
 
@@ -291,7 +291,7 @@ Mathematically, we can express this as
 V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 \end{equation}
 
-where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ %TODO: QUOTE Seminar Week 3. 
+where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ \citep{seminar:week3}. 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
 
@@ -363,7 +363,7 @@ The plot shows a rising proposed irrigation amount with rising water level. Ther
 \end{figure}
 \newpage
 \subsection{Steady State}
-In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
+In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \citep{gagniuc2017markov}. 
 The variable defining the behavior of our system is the water level. 
 Because of this, we have to calculate the difference in water level for each period. 
 Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. % TODO: auch noch evaporation nennen?
