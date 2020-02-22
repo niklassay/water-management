@@ -506,7 +506,38 @@ When taking evaporation into account, the reservoir never reaches its capacity l
 \end{figure}
 
 As expected, the average water level is lower with evaporation than without, which in return leads to a lower irrigation the farmers are allowed to receive. \\
-We should not at this point, that under the assumptions made, this simulation does not allow for evaporation effects that outweigh the rainfalls, as this would dry out the reservoir. The reason for this limit is found in the utility functions of the farmers and the recreational users. Because of $x\leq s$, we get for $s\to 0 \Rightarrow x\to 0$, and as a consequence 
+In the introduction, we stated that due to climate change, prolonged dry periods will occur. We want to reflect this fact in the simulation by scaling the evaporation rate with different factors. 
+
+%TODO make the figure better
+\begin{figure}[h]
+\begin{subfigure}{0.5\textwidth}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/results-evap-factors-water-levels.eps}
+	\caption{Water Level}
+	\label{fig:rainfall-real-data}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+	\centering
+	\includegraphics[width=1\textwidth]{figures/results-evap-factors-utilities.eps}
+	\caption{Total Utility}
+	\label{fig:value-function}
+\end{subfigure}
+\caption{Water level and log-scaled total utility over time, scaling evaporation with factors $0, 1, 2, 2.3$ (from top to bottom)}
+\label{fig:evaporation-factors}
+\end{figure}
+
+\ref{fig:evaporation-factors} shows the total utility and the water level over time, using scaling factors of $0, 1, 2, 2.3$.\footnote{The expected value of the evaporation should not exceed the expected value of the rainfall, as this would make it impossible to calculate the value function. The expected value of the evaporation with a scaling factor of $2.3$ is just below the expected value of the rainfall. } %TODO Fußnote gut so?
+We can see that higher amounts of evaporation not only lead to water levels, but also to significantly lower utilities for the recreational users and the farmers. 
+Especially when the reservoir completely dries out, the total utility approaches $-\infty$. This happens in periods $7,62,63,64$ and $65$ when applying a factor of $2.3$ to the evaporation. 
+
+%TODO improve this figure
+\begin{figure}[ht]
+	\includegraphics[width=1\textwidth]{figures/results-evap-factor-2.3.eps}
+	\caption{...}
+	\label{fig:evap-factor-2.3}
+\end{figure}
+
+The reason for this is found in the utility functions of the farmers and the recreational users. Because of $x\leq s$, we get for $s\to 0 \Rightarrow x\to 0$, and as a consequence 
 
 \begin{equation}
 \lim_{s, x\to0}F(x) = \lim_{s,x\to0}-\frac{1}{x} = -\inf
@@ -517,6 +548,9 @@ as well as
 \begin{equation}
 \lim_{s, x\to0}G(s,x) = \lim_{s,x\to0}-\frac{1}{(s-x)^2} = -\inf
 \end{equation}
+
+
+
 
 %TODO den folgenden Absatz rauswerfen?
 How then can these utility functions be interpreted in terms of reality? 
