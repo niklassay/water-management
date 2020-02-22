@@ -216,7 +216,7 @@ Comparing the results then allows us to draw conclusions on the accuracy of the 
 We use a dataset aquired from \cite{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
 % TODO describe how we fitted them to match the rainfall distribution
 
-\subsubsection{Modification 4: Taking Evaporation into Account}
+\subsubsection{Modification 4: Taking Evaporation into Account} \label{sec:intro-mod4}
 The evaporation of water from a water reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}.
 It therefore should definitely be considered in a real model that is used to determine the optimal irrigation strategy.
 The dataset that we use for the real rainfall also contains many other weather parameters.
@@ -485,7 +485,7 @@ Due to the higher expected value of rainfalls the optimal irrigation policy is s
 
 \subsection{Evaporation}
 In the following, we want to assess the effect of evaporation on the optimal irrigation policy and the steady state. 
-As described in \ref{intro-mod4}, we derive the amount of evaporation over time from other weather related and geographical data. 
+As described in \ref{sec:intro-mod4}, we derive the amount of evaporation over time from other weather related and geographical data. 
 The (calculated) evaporation has a low volatility over the years and has value of approximately 1 unit, as \ref{fig:without-vs-with-evaporation} shows. 
 Due to the fact that the reservoir has a fixed capacity of 7 units, rainfall that would fill the reservoir above this value is not available for further use. 
 When taking evaporation into account, the reservoir never reaches its capacity limits and thus all rainfall will be saved. This leads to an increased volatility of the water level. 
