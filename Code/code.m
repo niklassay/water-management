@@ -400,7 +400,7 @@ else
     set(gcf,'Units','Centimeters','position',[0,0,16,8]);
     %title('Aggreated Use for Farmers and Recreational Users');
     yyaxis left;
-    plot(utilRec(waterLevel(waterInd(:, 1:1000)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd)),'color','#A2142F');
+    plot(utilRec(waterLevel(waterInd(:, 1:T)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd)),'color','#A2142F');
     ylabel('Use');
     ylim([-100 0]);
     yyaxis right;
