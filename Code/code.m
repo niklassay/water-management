@@ -311,6 +311,8 @@ else
     % Plot optimal irrigation policy
     figure(4)
     hold on
+    set(gca,'FontSize',12);
+    set(gcf,'Units','Centimeters','position',[0,0,8,8]);
     plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind))
     title('Optimal Irrigation Policy')
     xlabel('Water Level of the Reservoir')
