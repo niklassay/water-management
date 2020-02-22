@@ -22,6 +22,11 @@ realDataSource = 'bangladesh_weather_formatted.csv';
 % simulate the evaporation
 locationName = 'Barisal';
 
+% Reservoir surface to volume ratio
+% This exemplary value is calculated for the Rurstausee with data from
+% https://de.wikipedia.org/wiki/Rurtalsperre
+surface_to_volume_ratio = 7.83 / 202.6;
+
 % Parameters of the value function
 a1 = 1;
 a2 = 2;
@@ -84,16 +89,23 @@ waterLevel = linspace(0,M,dimWL);
 if (useRealData)
     % Find column indices of the necessary data
     indData = find(strcmp(table2cell(data(1,:)), locationName));
-
     % Extract the rainfall data and calculate the average per year
-    avgRain = str2double(table2array(data(5:end,indData(1,4)))) * 12;
-
-    % Exclude missing values
-    avgRain = avgRain(~isnan(avgRain));
-
-    % Scale the real data down to be sensible in this example
-    avgRain = avgRain / 900;
+    avgRain_mm = str2double(table2array(data(5:end,indData(1,4)))) * 12;
     
+    % Exclude missing values
+    avgRain_mm = avgRain_mm(~isnan(avgRain_mm));
+
+    % Norm the amount of rain in mm to the volume of the reservoir
+    avgRain = M*surface_to_volume_ratio*avgRain_mm/1000;
+
+    % Note that because of the weather conditions of the location chosen in 
+    % bangladesh, the amount of rainfall is not high enough to provide a
+    % significant amount of value through irrigatio for the farmers. For 
+    % this demo however, we want the reservoir to be refilled in order to 
+    % give the farmers at least some utility. Thus we will
+    % artificially increase the amount of rainfall here. 
+    avgRain = avgRain * 4;
+
     % Expected value of the rainfall
     E_rain = mean(avgRain);
 else
@@ -120,23 +132,38 @@ dimE_Rain = round(E_rain/(M/dimWL));
 if (useRealData)
     % Extract the data necessary for the evaporation simulation
     altitude = str2double(table2array(data(2,indData(1,1))));
-    latitude = str2double(table2array(data(3,indData(1,1))));
+    latitude_n = str2double(table2array(data(3,indData(1,1))));
     avgMaxTemp = str2double(table2array(data(5:end,indData(1,1))));
     avgMinTemp = str2double(table2array(data(5:end,indData(1,2))));
     avgMeanTemp = (avgMaxTemp + avgMinTemp) / 2;
     avgHumidity = str2double(table2array(data(5:end,indData(1,3))));
 
-    % Calculate the evaporation with the formula given in the literature
-    % (average evaporation in mm per year)
-    avgEvap = ((700 .* (avgMeanTemp + 0.006 .* altitude) ./...
-    (100 - latitude) + 15 .* ((100 - avgHumidity) / 5))...
-    ./ (80 - avgMeanTemp)) * 365.25; 
-    
-    % Exclude missing values
-    avgEvap = avgEvap(~isnan(avgEvap));
+    % Calculate the average dew temperature using (lawrence2005relationship)
+    % Inputs: avgHumidity in degrees celsius
+    %         avgHumidity isurface_to_volume_ration percent
+    % Output: avgDewTemp in degrees celsius
+    avgDewTemp = (100 - avgHumidity) / 5;
 
-    % Scale the real data down to be sensible in this example
-    avgEvap = avgEvap / 900;
+    % Calculate the altitude in dergees south
+    latitude_s = -latitude_n;
+
+    % Calculate the average evaporation using (linacre1977simple)
+    % Inputs: avgMeanTemp in degrees celsius
+    %         avgDewTemp in degrees celsius
+    %         latitude in degrees south    %CORRECT?
+    %         altitude in metres
+    % Output: avgEvap in mm per year
+    avgEvap_mm = (700 .* (avgMeanTemp + 0.006 .* altitude)./(100 - latitude_s) ...
+                + 15 .* (avgMeanTemp - avgDewTemp))./ (80 - avgMeanTemp) * 365.25; 
+
+    % Exclude missing values
+    avgEvap_mm = avgEvap_mm(~isnan(avgEvap_mm));
+
+    % Note that because of the weather in the chosen location in
+    % bangladesh, the evaporation is higher than the 
+
+    % Norm the amount of rain in mm to the volume of the reservoir
+    avgEvap = M*surface_to_volume_ratio*avgEvap_mm/1000;
 
     % Expected value of the evaporation
     E_Evap = mean(avgEvap);
