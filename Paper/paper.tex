@@ -509,7 +509,7 @@ As expected, the average water level is lower with evaporation than without, whi
 In the introduction, we stated that due to climate change, prolonged dry periods will occur. We want to reflect this fact in the simulation by scaling the evaporation rate with different factors. 
 
 %TODO make the figure better
-\begin{figure}[h]
+\begin{figure}[ht]
 \begin{subfigure}{0.5\textwidth}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/results-evap-factors-water-levels.eps}
@@ -525,15 +525,16 @@ In the introduction, we stated that due to climate change, prolonged dry periods
 \caption{Water level and log-scaled total utility over time, scaling evaporation with factors $0, 1, 2, 2.3$ (from top to bottom)}
 \label{fig:evaporation-factors}
 \end{figure}
+%\clearpage
 
 \ref{fig:evaporation-factors} shows the total utility and the water level over time, using scaling factors of $0, 1, 2, 2.3$.\footnote{The expected value of the evaporation should not exceed the expected value of the rainfall, as this would make it impossible to calculate the value function. The expected value of the evaporation with a scaling factor of $2.3$ is just below the expected value of the rainfall. } %TODO Fußnote gut so?
 We can see that higher amounts of evaporation not only lead to water levels, but also to significantly lower utilities for the recreational users and the farmers. 
 Especially when the reservoir completely dries out, the total utility approaches $-\infty$. This happens in periods $7,62,63,64$ and $65$ when applying a factor of $2.3$ to the evaporation. 
 
 %TODO improve this figure
-\begin{figure}[ht]
+\begin{figure}[h]
 	\includegraphics[width=1\textwidth]{figures/results-evap-factor-2.3.eps}
-	\caption{...}
+	\caption{Evaporation multiplied by a factor of $2.3$ outweighs the rainfall in certain periods} %TODO 
 	\label{fig:evap-factor-2.3}
 \end{figure}
 
