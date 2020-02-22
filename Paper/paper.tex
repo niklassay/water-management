@@ -211,6 +211,7 @@ We do this by using a  $\sigma^2$ of x.
 Instead of simulating the rainfall with random numbers, we also use real data.
 Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
 We use a dataset aquired from \citep{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
+To make this data fit our somewhat arbitrarily selected range of 0 to 7 for water levels in the reservoir, we...
 % TODO describe how we fitted them to match the rainfall distribution
 
 \subsubsection{Modification 4: Taking Evaporation into Account} \label{sec:intro-mod4}
@@ -277,10 +278,10 @@ where the weights $w_i$ are given as the solution to a linear system of equation
 \subsection{Dynamic Programming}
 
 A common technique to solve optimization or combinatorial problems is called Dynamic Programming. 
-It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). 
+It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). % Nicht eher "memoRization"?
 In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aimed to provide a solution to multi-stage-decision processes. 
 He defines a \textit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). 
-This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard o the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
+This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
 
 \subsection{The Bellman Equation}
 
@@ -306,7 +307,7 @@ Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
 	\begin{equation}
 s = \left( \begin{array}{c}0\\...\\7\end{array}\right),\hspace{2mm}x = \left( \begin{array}{c}0\\...\\7\end{array}\right)
 \end{equation}
-
+% TODO Gibt es hier nicht eine mathematisch schönere Schreibweise um einen Vektor mit 1000 Einträgen darzustellen? (R hoch 1000/ R hoch n)
 % TODO das scheint mir nicht so ganz korrekt zu sein. Meint ihr die Dimension?
 Note that the maximum reservoir capacity is $7$ and $|s|=|x| = n = 1000$. 
 
@@ -329,7 +330,7 @@ V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 
 which equals to finding the column $aux$ that maximizes the expected value over all states.
 We repeat this step over and over again until the our value function $V$ converges.
-In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value) \\
+In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value \\
 
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 
@@ -370,7 +371,7 @@ Due to the fact, that our water level highly depends on the randomly distributed
 To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1*10^{-7}$ from a period to the next.
 A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
 Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
-The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
+The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rainfall is still a random distribution.
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/steadyState.eps}
 	\caption{Exemplary Calculation of the Steady State}
@@ -379,7 +380,7 @@ The water level found to be a steady state and the period in which this conditio
 \subsection{Steady State Probability}
 As mentioned above, the steady state changes from simulation to simulation.
 In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
-To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each.
+To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each. % "the forward simulation" instead of "our code"?
 We then counted the occurrences, normalized them and calculated the corresponding probability.
 The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
 The highest possibility for a steady state is around 4.2. 
@@ -394,7 +395,7 @@ The curve resembles a normal distribution.
 \subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
 When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
 Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
-A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
+A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. % Finde die Formulierung nicht so gut: Sie sind ja weiterhin voll verfügbar, aber eben in Zukunft weniger wert. Bzw das könnte man diskutieren.
 This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
 One can say that a high $\beta$ prefers a long-term policy while a smaller $\beta$ leads to a rather short-term policy.
 \begin{figure}[ht]
