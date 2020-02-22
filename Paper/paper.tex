@@ -61,9 +61,6 @@ natbib=true
 ]{biblatex}
 \addbibresource{collection.bib}
 
-% TODO delete the lorem ipsum
-\usepackage{blindtext} % Package to generate dummy text throughout this template 
-
 \title{Water Management}
 %----------------------------------------------------------------------------------------
 
@@ -257,7 +254,7 @@ Modification 4 is an extension of Modification 3.
 Now, it's trivial to compute the flow at any given time using code, simply by implementing the formula as given above. 
 However, if we want to compute the amount of water flowing through the pipe in the time interval $[0.25, 0.5]$, we can not calculate that directly, as we would have to know the antiderivative of $f(t)$. 
 Apart from this example, it's not always trivial to calculate the antiderivative of a function analytically. 
-[TODO: zwei mal however]However it is possible compute the area below (almost) any function using numerical integration, also called numerical quadrature. 
+Nonetheless it is possible compute the area below (almost) any function using numerical integration, also called numerical quadrature. 
 
 A naive implementation of a quadrature could be to calculate the total area of equidistant rectangles whose height corresponds to the function value of $f$: 
 
@@ -294,7 +291,7 @@ Mathematically, we can express this as
 V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 \end{equation}
 
-where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ [TODO: QUOTE Seminar Week 3]. 
+where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ %TODO: QUOTE Seminar Week 3. 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
 
@@ -335,7 +332,6 @@ We repeat this step over and over again until the our value function $V$ converg
 In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value) \\
 
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
-% TODO: hier steady state und monte carlo simulation erklären oder besser in results?
 
 %------------------------------------------------
 \newpage
@@ -367,12 +363,11 @@ The plot shows a rising proposed irrigation amount with rising water level. Ther
 \end{figure}
 \newpage
 \subsection{Steady State}
-% TODO maybe move to theory?
 In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \cite{gagniuc2017markov}. 
 The variable defining the behavior of our system is the water level. 
 Because of this, we have to calculate the difference in water level for each period. 
 Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. % TODO: auch noch evaporation nennen?
-To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1x10^{-7}$ from a period to the next.
+To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1*10^{-7}$ from a period to the next.
 A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
 Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
 The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rain fall is still a random distribution.
@@ -542,7 +537,7 @@ In this scenario, we could imagine this to be an isolated village, where the onl
 %----------------------------------------------------------------------------------------
 %	STATUTORY DECLARATION IN LIEU OF AN OATH
 %----------------------------------------------------------------------------------------
-
+\pagestyle{empty} 
 \begingroup
 \begin{center}
 	\large
@@ -552,6 +547,12 @@ In this scenario, we could imagine this to be an isolated village, where the onl
 \vspace{0.3cm}
 
 \begin{tabular}{@{}p{8cm}p{5.8cm}}
+	\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
+	\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
+	&\\
+	\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
+	\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
+	&\\
 	\underline{\hspace{6cm}} & \underline{\hspace{5.8cm}} \\
 	\vspace{0.02cm}Name, Vorname & \vspace{0.02cm}Matrikelnummer \\
 \end{tabular}
@@ -568,7 +569,13 @@ selbständig und ohne unzulässige fremde Hilfe erbracht habe. Ich habe keine an
 \vspace{0.6cm}
 
 \begin{tabular}{@{}p{8cm}p{5.8cm}}
-	\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+	&\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+	&\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
 	Ort, Datum & Unterschrift \\
 \end{tabular}
 
@@ -591,9 +598,14 @@ selbständig und ohne unzulässige fremde Hilfe erbracht habe. Ich habe keine an
 Die vorstehende Belehrung habe ich zur Kenntnis genommen:
 
 \vspace{0.6cm}
-%TODO Seitenzahl weg, mehr personen
 \begin{tabular}{@{}p{8cm}p{5.8cm}}
-	\underline{\smash{Aachen, den \today}} & \underline{\hspace{5.8cm}}\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+	&\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
+	Ort, Datum & Unterschrift \\
+	&\\
+	\underline{\smash{Aachen, den \hspace{4cm}}} & \underline{\hspace{5.8cm}}\\
 	Ort, Datum & Unterschrift \\
 \end{tabular}
 
