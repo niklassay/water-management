@@ -272,25 +272,20 @@ end
 %% Plots
 close all;
 figure(100)
-colors = colormap(autumn);
 l = size(evapFactors, 2);
 for i=1:l
-    semilogy(utilityByEvapFactors(i, :), 'color', colors(round(0.5*255*i/l), :))
-    %stairs(utilityByEvapFactors(i, :), 'color', colors(round(0.5*255*i/l), :))
-    %set(gca, 'YScale', 'log')
-    hold on;
-end
-hold off;
-return
-figure(101)
-colors = colormap(winter);
-l = size(evapFactors, 2);
-for i=1:l
-    plot(reservoirLevels(i, :), 'color', colors(round(0.5*255*i/l), :))
+    semilogy(utilityByEvapFactors(i, :), 'color', [i/l, 0, 1-i/l])
     hold on;
 end
 hold off;
 
+figure(101)
+l = size(evapFactors, 2);
+for i=1:l
+    plot(reservoirLevels(i, :), 'color', [i/l, 0, 1-i/l])
+    hold on;
+end
+hold off;
 
 if(useMonteCarloSimulation)
     edges = [0:0.1:7];
