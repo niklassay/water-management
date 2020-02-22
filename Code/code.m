@@ -25,7 +25,11 @@ locationName = 'Barisal';
 % Reservoir surface to volume ratio
 % This exemplary value is calculated for the Rurstausee with data from
 % https://de.wikipedia.org/wiki/Rurtalsperre
-surface_to_volume_ratio = 7.83 / 202.6;
+surfaceToVolumeRatio = 7.83 / 202.6;
+
+% Factors to artificially scale the amount of evaporation if real data
+% is being used
+evapFactors = [0, 1, 2, 2.3];
 
 % Parameters of the value function
 a1 = 1;
@@ -96,7 +100,7 @@ if (useRealData)
     avgRain_mm = avgRain_mm(~isnan(avgRain_mm));
 
     % Norm the amount of rain in mm to the volume of the reservoir
-    avgRain = M*surface_to_volume_ratio*avgRain_mm/1000;
+    avgRain = M*surfaceToVolumeRatio*avgRain_mm/1000;
 
     % Note that because of the weather conditions of the location chosen in 
     % bangladesh, the amount of rainfall is not high enough to provide a
@@ -126,140 +130,167 @@ end
 % the grid
 dimE_Rain = round(E_rain/(M/dimWL));
 
-
+utilityByEvapFactors = [];
+optIrrigationByEvapFactors = [];
+reservoirLevels = [];
+for evapFactor = evapFactors
+    
 %% Evaporation Simulation
-
-if (useRealData)
-    % Extract the data necessary for the evaporation simulation
-    altitude = str2double(table2array(data(2,indData(1,1))));
-    latitude_n = str2double(table2array(data(3,indData(1,1))));
-    avgMaxTemp = str2double(table2array(data(5:end,indData(1,1))));
-    avgMinTemp = str2double(table2array(data(5:end,indData(1,2))));
-    avgMeanTemp = (avgMaxTemp + avgMinTemp) / 2;
-    avgHumidity = str2double(table2array(data(5:end,indData(1,3))));
-
-    % Calculate the average dew temperature using (lawrence2005relationship)
-    % Inputs: avgHumidity in degrees celsius
-    %         avgHumidity isurface_to_volume_ration percent
-    % Output: avgDewTemp in degrees celsius
-    avgDewTemp = (100 - avgHumidity) / 5;
-
-    % Calculate the altitude in dergees south
-    latitude_s = -latitude_n;
-
-    % Calculate the average evaporation using (linacre1977simple)
-    % Inputs: avgMeanTemp in degrees celsius
-    %         avgDewTemp in degrees celsius
-    %         latitude in degrees south    %CORRECT?
-    %         altitude in metres
-    % Output: avgEvap in mm per year
-    avgEvap_mm = (700 .* (avgMeanTemp + 0.006 .* altitude)./(100 - latitude_s) ...
-                + 15 .* (avgMeanTemp - avgDewTemp))./ (80 - avgMeanTemp) * 365.25; 
-
-    % Exclude missing values
-    avgEvap_mm = avgEvap_mm(~isnan(avgEvap_mm));
-
-    % Note that because of the weather in the chosen location in
-    % bangladesh, the evaporation is higher than the 
-
-    % Norm the amount of rain in mm to the volume of the reservoir
-    avgEvap = M*surface_to_volume_ratio*avgEvap_mm/1000;
-
-    % Expected value of the evaporation
-    E_Evap = mean(avgEvap);
-
-    % Discretize and round the expected value of the evaporation to fit to
-    % the grid
-    dimE_Evap = round(E_Evap/(M/dimWL));
-else 
-    % Use no evaporation
-    avgEvap = zeros(T,1);
-    dimE_Evap = 0;
-end
-
-[V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, ...
-                                                dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
-
-
-
-%% (Monte Carlo) Simulation for the Steady State
-
-for monteInd=1:monteCarloMaxIter
     if (useRealData)
-        % Use real rainfall data
-        r = avgRain;
-    else
-        % Use lognormal distributed rainfall
-        r = exp(mu + sigma.*randn(T,1));
-    end
-    
-    % Overwrite T to match available data points if using real data
-    if (useRealData)
-        T = size(r,1);
+        % Extract the data necessary for the evaporation simulation
+        altitude = str2double(table2array(data(2,indData(1,1))));
+        latitude_n = str2double(table2array(data(3,indData(1,1))));
+        avgMaxTemp = str2double(table2array(data(5:end,indData(1,1))));
+        avgMinTemp = str2double(table2array(data(5:end,indData(1,2))));
+        avgMeanTemp = (avgMaxTemp + avgMinTemp) / 2;
+        avgHumidity = str2double(table2array(data(5:end,indData(1,3))));
+
+        % Calculate the average dew temperature using (lawrence2005relationship)
+        % Inputs: avgHumidity in degrees celsius
+        %         avgHumidity in percent
+        % Output: avgDewTemp in degrees celsius
+        avgDewTemp = (100 - avgHumidity) / 5;
+
+        % Calculate the altitude in degrees south
+        latitude_s = -latitude_n;
+
+        % Calculate the average evaporation using (linacre1977simple)
+        % Inputs: avgMeanTemp in degrees celsius
+        %         avgDewTemp in degrees celsius
+        %         latitude in degrees south
+        %         altitude in metres
+        % Output: avgEvap in mm per year
+        avgEvap_mm = (700 .* (avgMeanTemp + 0.006 .* altitude)./(100 - latitude_s) ...
+                    + 15 .* (avgMeanTemp - avgDewTemp))./ (80 - avgMeanTemp) * 365.25; 
+
+        % Exclude missing values
+        avgEvap_mm = avgEvap_mm(~isnan(avgEvap_mm));
+
+        % Scale the evaporation for different simulations
+        avgEvap_mm = avgEvap_mm * evapFactor;
+
+        % Norm the amount of rain in mm to the volume of the reservoir
+        avgEvap = M*surfaceToVolumeRatio*avgEvap_mm/1000;
+
+        % Expected value of the evaporation
+        E_Evap = mean(avgEvap);
+
+        % Discretize and round the expected value of the evaporation to fit to
+        % the grid
+        dimE_Evap = round(E_Evap/(M/dimWL));
+    else 
+        % Use no evaporation
+        avgEvap = zeros(T,1);
+        dimE_Evap = 0;
     end
 
-    % Index for the current water level
-    waterInd = zeros(1, T+1);
-    % Set the index to 1 (empty) in period 1
-    waterInd(1) = 1;
+    [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, ...
+                                                    dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
 
-    % Amount of water (as index) over time to be used for irrigation
-    irrigationInd = zeros(1, T);
-    
-    % Steady state levels of water in the reservoir over time
-    steadyStateLvls = zeros(2, T);
-    % Initialize the steady state period with the amount of
-    % periods of the forward iteration in case no steady state will be
-    % found
-    steadyStatePeriod = T;
-    
-    % Perform a forward iteration
-    for i=1:T
-        % Irrigate with the optimal amount of water concerning the current
-        % water level
-        irrigationInd(i) = optIrrigation_ind(waterInd(i));
-        
-        % Calculate the water level in the following period
-        waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) ...
-                            - round(avgEvap(i)/(M/dimWL)),1),dimWL);
-        
-        % Calculate the steady state level of the water reservoir
-        if (i > steadyStateMeanPeriods)
-            steadyStateLvls(1,i) = mean(waterLevel(waterInd(i - steadyStateMeanPeriods:i)));
+
+
+    %% (Monte Carlo) Simulation for the Steady State
+
+    for monteInd=1:monteCarloMaxIter
+        if (useRealData)
+            % Use real rainfall data
+            r = avgRain;
         else
-            steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
+            % Use lognormal distributed rainfall
+            r = exp(mu + sigma.*randn(T,1));
         end
-        
-        % Calculate the change in the steady state levels
-        if (i > 1)
-            steadyStateLvls(2,i) = steadyStateLvls(1,i)...
-                                   - steadyStateLvls(1,i-1);
+
+        % Overwrite T to match available data points if using real data
+        if (useRealData)
+            T = size(r,1);
         end
-    end
-    
-    % Try to find a steady state
-    if(~useMonteCarloSimulation)
-        steadyStateLvl = steadyStateLvls(1,i);
-    else
-        for i=2:T
-            % A steady state has been found if the changes in the steady state
-            % levels are below the steady state tolerance
-            if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
-                steadyStatePeriod = i;
-                steadyStateLvl = steadyStateLvls(1,i);
-                fprintf('Steady State found in period %s\n', num2str(i));
-                break;
+
+        % Index for the current water level
+        waterInd = zeros(1, T+1);
+        % Set the index to 1 (empty) in period 1
+        waterInd(1) = 1;
+
+        % Amount of water (as index) over time to be used for irrigation
+        irrigationInd = zeros(1, T);
+
+        % Steady state levels of water in the reservoir over time
+        steadyStateLvls = zeros(2, T);
+        % Initialize the steady state period with the amount of
+        % periods of the forward iteration in case no steady state will be
+        % found
+        steadyStatePeriod = T;
+
+        % Perform a forward iteration
+        for i=1:T
+            % Irrigate with the optimal amount of water concerning the current
+            % water level
+            irrigationInd(i) = optIrrigation_ind(waterInd(i));
+
+            % Calculate the water level in the following period
+            waterInd(i+1) = min(max(waterInd(i) - irrigationInd(i) + round(r(i)/(M/dimWL)) ...
+                                - round(avgEvap(i)/(M/dimWL)),1),dimWL);
+
+            % Calculate the steady state level of the water reservoir
+            if (i > steadyStateMeanPeriods)
+                steadyStateLvls(1,i) = mean(waterLevel(waterInd(i - steadyStateMeanPeriods:i)));
+            else
+                steadyStateLvls(1,i) = mean(waterLevel(waterInd(1:i)));
+            end
+
+            % Calculate the change in the steady state levels
+            if (i > 1)
+                steadyStateLvls(2,i) = steadyStateLvls(1,i)...
+                                       - steadyStateLvls(1,i-1);
             end
         end
+
+        % Try to find a steady state
+        if(~useMonteCarloSimulation)
+            steadyStateLvl = steadyStateLvls(1,i);
+        else
+            for i=2:T
+                % A steady state has been found if the changes in the steady state
+                % levels are below the steady state tolerance
+                if (abs(steadyStateLvls(2,i)) < steadyStateTolerance)
+                    steadyStatePeriod = i;
+                    steadyStateLvl = steadyStateLvls(1,i);
+                    fprintf('Steady State found in period %s\n', num2str(i));
+                    break;
+                end
+            end
+        end
+        % Save the steady state of the current monte carlo iteration
+        monteCarloSteadyState(monteInd) = steadyStateLvl;
+        fprintf('Iteration %s ended with Steady State %s\n', ...
+                 num2str(monteInd), num2str(steadyStateLvl));
     end
-    % Save the steady state of the current monte carlo iteration
-    monteCarloSteadyState(monteInd) = steadyStateLvl;
-    fprintf('Iteration %s ended with Steady State %s\n', ...
-             num2str(monteInd), num2str(steadyStateLvl));
+    utility = utilRec(waterLevel(waterInd(:, 1:T)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd));
+    utilityByEvapFactors = cat(1, utilityByEvapFactors , utility);
+    optIrrigationByEvapFactors = cat(1, optIrrigationByEvapFactors , waterLevel(optIrrigation_ind));
+    reservoirLevels = cat(1, reservoirLevels , waterLevel(waterInd));
 end
+%% Plots
+close all;
+figure(100)
+colors = colormap(autumn);
+l = size(evapFactors, 2);
+for i=1:l
+    semilogy(utilityByEvapFactors(i, :), 'color', colors(round(0.5*255*i/l), :))
+    %stairs(utilityByEvapFactors(i, :), 'color', colors(round(0.5*255*i/l), :))
+    %set(gca, 'YScale', 'log')
+    hold on;
+end
+hold off;
+return
+figure(101)
+colors = colormap(winter);
+l = size(evapFactors, 2);
+for i=1:l
+    plot(reservoirLevels(i, :), 'color', colors(round(0.5*255*i/l), :))
+    hold on;
+end
+hold off;
 
-
-%% plots
 
 if(useMonteCarloSimulation)
     edges = [0:0.1:7];
@@ -281,7 +312,7 @@ else
     ylabel('Maximum Value V');
     axis([0 M -20 0]);
     hold off
-    
+
     % Plot water level, amount of water used for irrigation, rainfall and
     % evaporation
     figure(2)
@@ -333,7 +364,7 @@ else
     xlabel('Period');
     ylabel('Amount');
     hold off
-    
+
     % Note: figures 6 and 7 require manual panning and zooming in order to
     % see the details
 
@@ -347,7 +378,7 @@ else
     ylabel('Amount of Water in the Reservoir');
     zlabel('Value');
     hold off
-    
+
     % Plot the auxiliary matrix of the recreational user
     figure(7)
     hold on
@@ -379,13 +410,13 @@ else
     set(gca,'FontSize',12)
     set(gcf,'Units','Centimeters','position',[0,0,16,12]);
     hold off
-    
-    
+
+
     % Plot optimal irrigation policy
     figure(9)
     hold on
     colormap_jet = colormap(parula);
-    for beta=0.95:-0.05:0.95
+    for beta=0.95:-0.05:0.1
         % Computation of the Value Function
         [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance);
         plot(linspace(0,M,dimWL), waterLevel(optIrrigation_ind), 'color', colormap_jet(round(256*beta),:))
@@ -394,7 +425,7 @@ else
     xlabel('Water Level of the Reservoir')
     ylabel('Irrigation Amount')
     hold off
-    
+
     % Plot the aggregated use for farmers and recreational users
     figure(10)
     hold on
@@ -416,7 +447,7 @@ else
     xlim([1 100]);
     xlabel('Period');
     hold off
-    
+
     figure(11)
     set(gcf,'Units','Centimeters','position',[0,0,8,8]);
     edges = [0:0.05:7];
@@ -427,7 +458,6 @@ else
     xlabel('Amount of Rain');
     hold off
 end
-
 
 
 %% Computation of the Value Function
