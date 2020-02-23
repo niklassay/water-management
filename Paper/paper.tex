@@ -201,11 +201,11 @@ At the end we also give a little outlook into further possible extensions.
 We also study the effects of different betas on the optimal irrigation policy. 
 The discount factor takes into account that agents in a simple two-stage model often value current consumption over future consumption.
 It expresses how much one unit of future utility is worth in terms of current utility and therefore makes them easily comparable \citep{kruschwitz2014investitionsrechnung}.
-We take a look at the discount factors x and x.
+We take a look at the discount factors from 0 to 1.
 
 \subsubsection{Modification 2: Increased Rainfall Volatility}
 To consider the predicted impacts of climate change \citep{guhathakurta2011impact}, we look at the effect of increased rainfall volatility. 
-We do this by using a  $\sigma^2$ of x.
+We do this by using a  $\sigma^2$ of x. % TODO: Das ist noch nicht ganz richtig
 
 \subsubsection{Modification 3: Using Real Data for Rainfall}
 Instead of simulating the rainfall with random numbers, we also use real data.
@@ -332,6 +332,8 @@ which equals to finding the column $aux$ that maximizes the expected value over 
 We repeat this step over and over again until the our value function $V$ converges.
 In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value \\
 
+% TODO Fehlen hier nicht noch ein paar Sätze dazu wie wir die optimal irrigation policy extrahieren?
+
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 
 %------------------------------------------------
@@ -380,7 +382,7 @@ The water level found to be a steady state and the period in which this conditio
 \subsection{Steady State Probability}
 As mentioned above, the steady state changes from simulation to simulation.
 In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
-To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each. % "the forward simulation" instead of "our code"?
+To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each. % "the forward simulation" instead of "our code"? Außerdem laut code 500x statt 1000x
 We then counted the occurrences, normalized them and calculated the corresponding probability.
 The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
 The highest possibility for a steady state is around 4.2. 
@@ -407,7 +409,7 @@ One can say that a high $\beta$ prefers a long-term policy while a smaller $\bet
 \subsection{Changed Volatility of Rainfalls}
 A more volatile rainfall means a rainfall having a higher standard deviation.
 Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
-Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. 
+Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. % Würde das erste "mean of mu" rausnehmen oder spezifizieren -> mean of the underlying normal distribution
 (See \ref{eq:rainfall} for reference) 
 \begin{equation}
 	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
@@ -472,7 +474,7 @@ Since there are only 65 periods within the real data set is not as well distribu
 In the real data set there are no periods with (almost) no rain while in our simulation there are.
 As we can learn from our dataset this assumption is not realistic.
 Since the amount of rain is scaled down to match our model, there is no comparison between means of the model possible.
-Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls.
+Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls. % feasible -> sensible?
 As shown in \ref{fig:optimalIrrigationPolicy-real-data} the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends on the expected amount of rain.
 Due to the higher expected value of rainfalls the optimal irrigation policy is steeper over the water level compared to the simulated rainfall.
 
@@ -560,6 +562,43 @@ In this scenario, we could imagine this to be an isolated village, where the onl
 
 \section{Conclusion}
 %TODO content
+In this work we developed an optimal irrigation strategy for an hypothetical water reservoir, maximizing the sum of utilities for farmers and recreational users.
+Using dynamic programming we calculated an aggregated value function based on the given utility functions as described in chapter 2.4.
+We applied this value function to a basic model of the water reservoir, by extracting the optimal irrigation path from the value function and simulating water influx in the form of rainfall with a lognormally distributed random variable.
+The optimal irrigation policy stipulates quite low irrigation amounts for low water levels, mostly due to the very negative utility citizens receive from an almost empty reservoir (Figure 4).
+With $\beta = 0.9$, the optimal irrigation amount tapers off again at the end, due to % TODO: Besprechen! MMn wegen Möglichkeit des Mehrfachnutzens bei Non-irrigation (daher nicht erkennbar bei beta = 0)
+In figure 9 you can see one possible scenario in our basic setting with $\mu=0$ and $\sigma=1$.
+However, due to the random variable, every forward simulation can look quite different, even though no parameters are changed.
+Therefore, the steady state of the water level itself, defined as the moving average of 200 periods (see chapter 3.2), is uncertain.
+Running our forward simulation 500 times, we could see that it seems to follow a normal distribution with a mean of around 4.2 and a standard deviation of 0.37. % TODO: StdDev auch im Ergebnisteil erwähenen? 
+\\\\
+We also looked at how changes in the discount factor $\beta$ influenced the optimal irrigation policy (Figure 7).
+As expected, a high $\beta$ leads to less irrigation at high water levels.
+That's because citizens might be able to benefit from the remaining water again in future periods, while when using water for irrigation farmers can only benefit once in the present period.
+Increasing $\beta$ means putting more weight on future utility up to a factor of $\beta = 1$, where stakeholders are indifferent between current and future utility.
+A low $\beta$ on the other hand leads to a higher amount of water used for irrigation, especially at higher water levels. 
+This can be easily imagined with the extreme case $\beta = 0$, which means that no one benefits from leaving water in the reservoir for the next period.
+Of course there is still water that's being left in the reservoir, but that is only to benefit citizens in the current period and not because of the benefits of the remaining water for the next period.
+In this case the model is reduced to a single-stage optimization problem with no uncertainty, where the only task is the optimal allocation of the given current amount of water on the basis of the stakeholders' utility functions.
+\\
+We then went on and looked at the effect of increased rainfall volatility (Figures 9 and 10).
+Because of the constant mean, the total amount of rain and therefore of water influx in the reservoir stays the same.
+The result is a lower average water level in the reservoir.
+The aggregated use is a good indicator of the efficiency our allocation strategy is achieving.
+We could see that with rainfalls getting more volatile the sum of aggregated use over all simulated periods drops significantly, due to efficiency losses caused by increased likelihood of reservoir overflow and drought. % Evlt noch schnell ausrechnen?
+This vividly illustrates a very real consequence of climate change that governments and counties might face in the future.
+\\
+Instead of simulated rainfall, we also used real weather data from Barisal, Bangladesh. 
+The real rainfall distribution (Figure 11 a) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma=1$.
+This indicates that other parameters will have to be found to better describe the annual rainfall in that specific area.
+The higher expected value of rain in the real distribution leads to the optimal irrigation policy showing a higher amount of water used for irrigation at higher water levels (Figure 11 b).
+Further adding evaporation to the model shows...
+%Evap
+% Efficiency loss with higher evap scale factor -> same as more volatile rainfalls
+
+% Ausblick
+% Whole different problem, more of empirical nature: What even is the "right" discount factor in this context
+
 \clearpage
 \printbibliography
 
