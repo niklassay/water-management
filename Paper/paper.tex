@@ -331,8 +331,14 @@ We repeat this step over and over again until the our value function $V$ converg
 In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value \\
 % TODO Fehlen hier nicht noch ein paar Sätze dazu wie wir die optimal irrigation policy extrahieren?
 
-\subsubsection{TODO: Forward Simulation}
-
+\subsubsection{Forward Simulation}
+In order to simulate the problem, we developed a so called forward simulation which is run once for each period to be simulated.
+It consists of several steps that will be described in more detail here.
+At the begin of each period the code determines how much water according to the irrigation policy to be used for irrigation.
+Since the simulation starts with an empty reservoir the amount irrigated in the first period is zero.
+Then the water level for the next iteration is calculated.
+This calculation is based on the irrigation amount, the current water level, the amount of rain and the amount that went away by evaporation (see \ref{sec:intro-mod4}).
+Afterwards the simulation calculates the difference in water level of the period compared to its predecessor, which will be used for finding a steady state.
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 
 %------------------------------------------------
