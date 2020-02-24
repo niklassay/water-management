@@ -275,7 +275,7 @@ A more sophisticated way to determine the area of an unbounded integral is to us
 
 where the weights $w_i$ are given as the solution to a linear system of equations and the nodes $x_i$ correspond to the zeros of the n-th Hermite polynomial \citep{seminar:week6}.
 
-\subsection{Dynamic Programming}
+\subsubsection{Dynamic Programming}
 
 A common technique to solve optimization or combinatorial problems is called Dynamic Programming. 
 It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). % Nicht eher "memoRization"?
@@ -283,7 +283,7 @@ In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aime
 He defines a \textit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). 
 This is reflected in Bellman's Principle of Optimality: "An optimal policy has the property that whatever initial state and initial decisions are, the remaining decisions must constitute an optimal policy with regard to the state resulting from the first decisions" (\cite{bellman:1957}, p.2). 
 
-\subsection{The Bellman Equation}
+\subsubsection{The Bellman Equation}
 
 The so-called "Bellman Equation" answers the question, assuming a given state, what long-term utility can be expected by taking the best possible action now and at each subsequent step - or simply put: "What is the value $V$ of a state $s$?". 
 
@@ -296,8 +296,8 @@ where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
 %TODO hier noch auf die Definition von beta eingehen? Was ist beta und warum ist das relevant?
-
-\subsection{Computation of the value function}
+\subsection{Implementation}
+\subsubsection{Computation of the value function}
 
 In a first step, we want to compute the value function $V$ for each state $s$. 
 In order to do so, we need to calculate an auxiliary matrix $aux$ that contains the combined utilities of the farmers and the recreational users. 
@@ -329,8 +329,9 @@ V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 which equals to finding the column $aux$ that maximizes the expected value over all states.
 We repeat this step over and over again until the our value function $V$ converges.
 In our case the function converges, if the norm of the difference between $V'$ and $V$ falls below a certain tolerance value \\
-
 % TODO Fehlen hier nicht noch ein paar Sätze dazu wie wir die optimal irrigation policy extrahieren?
+
+\subsubsection{TODO: Forward Simulation}
 
 % Finally, we want to compute the value of the steady state by using a monte carlo simulation. 
 
@@ -384,8 +385,7 @@ To do so, we ran our code 1000 times (in specific, the forward simulation) and p
 We then counted the occurrences, normalized them and calculated the corresponding probability.
 The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
 The highest possibility for a steady state is around 4.2. 
-In edge cases one can find steady states as low as 3.5 or as high as 5.2. 
-The curve resembles a normal distribution. 
+The curve resembles a normal distribution with a standard deviation of $\sigma=0.37$.
 
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
@@ -571,7 +571,7 @@ However, due to the random variable, every forward simulation can look quite dif
 Therefore, the steady state of the water level itself, defined as the moving average of 200 periods (see chapter 3.2), is uncertain.
 Running our forward simulation 500 times, we could see that it seems to follow a normal distribution with a mean of around 4.2 and a standard deviation of 0.37. % TODO: StdDev auch im Ergebnisteil erwähenen? 
 \\\\
-We also looked at how changes in the discount factor $\beta$ influenced the optimal irrigation policy (Figure 7).
+We also looked at how changes in the discount factor $\beta$ influenced the optimal irrigation policy (\ref{fig:optimal-irrigation-beta}).
 As expected, a high $\beta$ leads to less irrigation at high water levels.
 That's because citizens might be able to benefit from the remaining water again in future periods, while when using water for irrigation farmers can only benefit once in the present period.
 Increasing $\beta$ means putting more weight on future utility up to a factor of $\beta = 1$, where stakeholders are indifferent between current and future utility.
@@ -580,7 +580,7 @@ This can be easily imagined with the extreme case $\beta = 0$, which means that 
 Of course there is still water that's being left in the reservoir, but that is only to benefit citizens in the current period and not because of the benefits of the remaining water for the next period.
 In this case the model is reduced to a single-stage optimization problem with no uncertainty, where the only task is the optimal allocation of the given current amount of water on the basis of the stakeholders' utility functions.
 \\
-We then went on and looked at the effect of increased rainfall volatility (Figures 9 and 10).
+We then went on and looked at the effect of increased rainfall volatility (\ref{fig:aggregated-use-rainfall-default} and \ref{fig:aggregated-use-rainfall-more-volatile}).
 Because of the constant mean, the total amount of rain and therefore of water influx in the reservoir stays the same.
 The result is a lower average water level in the reservoir.
 The aggregated use is a good indicator of the efficiency our allocation strategy is achieving.
