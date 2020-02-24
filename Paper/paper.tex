@@ -295,7 +295,7 @@ V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ \citep{seminar:week3}. 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
-
+%TODO hier noch auf die Definition von beta eingehen? Was ist beta und warum ist das relevant?
 
 \subsection{Computation of the value function}
 
@@ -307,9 +307,7 @@ Thus we discretize both water level $s$ and irrigation amount $x$ as vectors
 	\begin{equation}
 s = \left( \begin{array}{c}0\\...\\7\end{array}\right),\hspace{2mm}x = \left( \begin{array}{c}0\\...\\7\end{array}\right)
 \end{equation}
-% TODO Gibt es hier nicht eine mathematisch schönere Schreibweise um einen Vektor mit 1000 Einträgen darzustellen? (R hoch 1000/ R hoch n)
-% TODO das scheint mir nicht so ganz korrekt zu sein. Meint ihr die Dimension?
-Note that the maximum reservoir capacity is $7$ and $|s|=|x| = n = 1000$. 
+Note that the maximum reservoir capacity is $7$ and $s, x \in R^{1000}$. 
 
 For a combined utility of the farmers and the recreational users  $u(s_i,x_j) = F(x_j) + G(s_i,x_j)$, depending on the water level $s_i$ and the amount of irrigation $x_i$ we get an auxiliary matrix
 
@@ -357,7 +355,7 @@ Every value along the possible water levels is mapped to an irrigation amount th
 The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
 \begin{itemize}
 	\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
-	\item The diminishing margin utility of farmers lead to a decreasing gradient for the proposed irrigation amount with increasing water level.
+	\item As long as the discount factor $\beta$ is larger than 0, the water within the reservoir has a value in the next period for both recreational users and farmers. Due to this effect, saving waters makes sense and leads to a decreasing gradient for the proposed irrigation amount with increasing water level.
 \end{itemize}
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/OptimalIrrigationPolicy.eps}
@@ -382,7 +380,7 @@ The water level found to be a steady state and the period in which this conditio
 \subsection{Steady State Probability}
 As mentioned above, the steady state changes from simulation to simulation.
 In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
-To do so, we ran our code 1000 times and put the resulting water levels into bins with the size of 0.1 each. % "the forward simulation" instead of "our code"? Außerdem laut code 500x statt 1000x
+To do so, we ran our code 1000 times (in specific, the forward simulation) and put the resulting water levels into bins with the size of 0.1 each. 
 We then counted the occurrences, normalized them and calculated the corresponding probability.
 The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
 The highest possibility for a steady state is around 4.2. 
@@ -397,7 +395,8 @@ The curve resembles a normal distribution.
 \subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
 When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
 Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
-A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. % Finde die Formulierung nicht so gut: Sie sind ja weiterhin voll verfügbar, aber eben in Zukunft weniger wert. Bzw das könnte man diskutieren.
+A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
+%TODO Finde die Formulierung nicht so gut: Sie sind ja weiterhin voll verfügbar, aber eben in Zukunft weniger wert. Bzw das könnte man diskutieren.
 This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
 One can say that a high $\beta$ prefers a long-term policy while a smaller $\beta$ leads to a rather short-term policy.
 \begin{figure}[ht]
@@ -409,7 +408,7 @@ One can say that a high $\beta$ prefers a long-term policy while a smaller $\bet
 \subsection{Changed Volatility of Rainfalls}
 A more volatile rainfall means a rainfall having a higher standard deviation.
 Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
-Using a $\sigma^2=2$ includes a mean of $\mu=-1.5$ in order for the mean to stay the same. % Würde das erste "mean of mu" rausnehmen oder spezifizieren -> mean of the underlying normal distribution
+Using a $\sigma^2=2$ includes setting $\mu=-1.5$ in order for the mean to stay the same.
 (See \ref{eq:rainfall} for reference) 
 \begin{equation}
 	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
@@ -474,7 +473,7 @@ Since there are only 65 periods within the real data set is not as well distribu
 In the real data set there are no periods with (almost) no rain while in our simulation there are.
 As we can learn from our dataset this assumption is not realistic.
 Since the amount of rain is scaled down to match our model, there is no comparison between means of the model possible.
-Nevertheless one can say that the overall shape of a lognormal distribution is a feasible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls. % feasible -> sensible?
+Nevertheless one can say that the overall shape of a lognormal distribution is a sensible estimation for rainfall but for estimating whole years as periods the distribution might to be parameterized differently to fit actual rainfalls. 
 As shown in \ref{fig:optimalIrrigationPolicy-real-data} the changed distribution of rainfalls also has an effect on the optimal irrigation policy since it depends on the expected amount of rain.
 Due to the higher expected value of rainfalls the optimal irrigation policy is steeper over the water level compared to the simulated rainfall.
 
@@ -535,7 +534,7 @@ Especially when the reservoir completely dries out, the total utility approaches
 
 %TODO improve this figure
 \begin{figure}[h]
-	\includegraphics[width=1\textwidth]{figures/results-evap-factor-2.3.eps}
+	\includegraphics[width=1\textwidth]{figures/results-evap-factor-2-3.eps}
 	\caption{Evaporation multiplied by a factor of $2.3$ outweighs the rainfall in certain periods} %TODO 
 	\label{fig:evap-factor-2.3}
 \end{figure}
