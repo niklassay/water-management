@@ -137,17 +137,17 @@ With world population expected to hit 9.7 billion in 2050 and 11.2 billion in 21
 Already today, around one third of the world's population live under physical water scarcity \citep{vorosmarty2000global, alcamo2003global, oki2006global}.
 With climate change proceeding, rainfall as the natural influx of lakes will become more volatile in some regions while prolonged dry periods will make water an even more precious resource in other areas \citep{guhathakurta2011impact}.
 This situation will get even worse due to the projected increase in the demand of water per capita in many regions of the world, driven by lifestyle factors, especially diet \citep{vorosmarty2000global}.
-Despite all those challenges, research suggests that just by using water more efficiently, we will be able to meet the acute water, environment and poverty challenges facing us over the next 50 years \citep{molden2013water}.
+However, research suggests that just by using water more efficiently, we will be able to meet the challenges in water, environment and poverty facing us over the next 50 years \citep{molden2013water}.
 Therefore, the optimal allocation and sustainable use of the available water will be of increasing importance in the future.
 
 
 \subsection{Assumptions and Conditions}
 
 In this work, we want to examine the variations in use of water from a (hypothetical) water reservoir.
-One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of all different parties have to be considered.
-The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities.
-Note that while looking at just two agents is a vast simplification compared to a real allocation problem, one can easily add more stakeholders to the model, as long as there is enough computational power.
-The sequence of events for every period is displayed in \ref{fig:Sequence}.
+One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of different parties have to be considered. 
+The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities. 
+Though looking at just two agents is a vast simplification compared to real allocation problems, one can easily add more stakeholders to the model, as long as there is enough computational power.
+The sequence of events for every period is displayed in \ref{fig:Sequence}. %TODO Die Figure ist im PDF zu weit weg gerutscht! 
 At the beginning of every year (Step 1) we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
 The farmers utility function follows the form 
 
@@ -155,19 +155,20 @@ The farmers utility function follows the form
 	F(x) = \frac{a_1}{1+b_1} * x^{1+b_1}
 \end{equation}
 
-where $x$ represents the amount of water to be used for irrigation in a year. The preference parameters are $a_1 = 1$ and $b_1 = -2$.\\\\
+where $x$ represents the amount of water to be used for irrigation during a period. 
+The preference parameters are given as $a_1 = 1$ and $b_1 = -2$.\\\\
 
-During the summer months, citizens benefit from the remaining water due to recreational use (Step 2).
-This can be described by the recreational users' utility function which is
+During the summer months, citizens benefit from the remaining water in their recreational activities (Step 2).
+This can be described by the recreational users' utility function 
 
 \begin{equation}
   G(s, x) = \frac{a_2}{1+b_2} * (s-x)^{1+b_2}
 \end{equation}
 
-with the additional paramter $s$ that indicates the water level at the beginning of the year.
+with the additional parameter $s$ that indicates the water level at the beginning of the year.
 For recreational users, the preference parameters shall be $a_2 = 2$ and $b_2 = -3$.\\\\
 
-At the end of the year, water in the reservoir is replenished by rainfall (Step 3), which we can assume to be randomly following a lognormal distribution \citep{oosterbaan1994frequency}:
+At the end of the year, water in the reservoir is replenished by rainfall (Step 3), which we can assume to be randomly distributed following a lognormal distribution \citep{oosterbaan1994frequency}: %TODO cite steht über den Rand hinaus
 \begin{equation}
 	r \sim lognormal(\mu, \sigma^2)
 \end{equation}
@@ -191,34 +192,32 @@ and the discount factor for future utility
 	\label{fig:Sequence}
 \end{figure}
 
-Using dynamic programming in combination with a stochastic simulation of the rainfall, we determined the optimal irrigation policy that maximizes the combined utility of farmers and citizens for a number of years $T$.
-In the main part we will give a brief summary of the underlying theory and the optimization problem.
-After that we will present the results and our conclusions for the original model and its modifications, as well as possible shortfalls of our analysis.
-At the end we also give a little outlook into further possible extensions.
+In this work, we will determine an optimal irrigation policy that maximizes the combined utility of farmers and citizens over $T$ years by using dynamic programming in combination with a stochastic simulation of the rainfall. 
+In the main part we will give a brief summary of the underlying theory and the optimization problem. 
+After that we will present the results and our conclusions for the original model and its modifications, as well as possible shortfalls of our analysis. %TODO statt "possible shortfalls" besser "possible enhancements" schreiben? (klingt positiver?)
+Finally, we will give an outlook for further possible extensions.
 
 
 \subsubsection{Modification 1: Variation of the Discount Factor}
-We also study the effects of different betas on the optimal irrigation policy. 
+In this modification, we're interested in studying the effects of different betas on the optimal irrigation policy. 
 The discount factor takes into account that agents in a simple two-stage model often value current consumption over future consumption.
-It expresses how much one unit of future utility is worth in terms of current utility and therefore makes them easily comparable \citep{kruschwitz2014investitionsrechnung}.
-We take a look at the discount factors from 0 to 1.
+It expresses how much one unit of future utility is worth in terms of current utility and therefore makes them mathematically comparable \citep{kruschwitz2014investitionsrechnung}. %TODO wirklich deutsche Citation verwenden? 
+We take a look at the discount factors from X to Y. %TODO tatsächliche Grenzen einfügen
 
-\subsubsection{Modification 2: Increased Volatility of Rainfalls}
-To consider the predicted impacts of climate change \citep{guhathakurta2011impact}, we look at the effect of increased rainfall volatility. 
-We do this by using a  $\sigma^2$ of x. % TODO: Das ist noch nicht ganz richtig
+\subsubsection{Modification 2: Increasing the Volatility of Rainfalls}
+In order to take into account expected future impacts of climate change \citep{guhathakurta2011impact}, we consider the effects of increased volatility of precipitation. %TODO cite steht über den Rand hinaus
+We do so by setting $\sigma$ to 2. %TODO Das ist noch nicht ganz richtig
 
-\subsubsection{Modification 3: Using Real Data for Rainfall}
-Instead of simulating the rainfall with random numbers, we also use real data.
-Comparing the results then allows us to draw conclusions on the accuracy of the simulation for that region. 
-We use a dataset aquired from \citep{kaggle:2019}, that contains real rainfall data for the last 65 years in different regions of Bangladesh. % Zitation anpassen
-To make this data fit our somewhat arbitrarily selected range of 0 to 7 for water levels in the reservoir, we...
-% TODO describe how we fitted them to match the rainfall distribution
+\subsubsection{Modification 3: Using Real Data for Rainfalls}
+Instead of simulating the rainfall with randomly generated numbers, we want to use real data. 
+We make use of a dataset aquired from \citep{kaggle:2019}, which contains rainfall and other weather related data from the last 65 years in different regions of Bangladesh (here we will focus on the city Barisal). %TODO Zitation anpassen
+In order to make the dataset compatible to the basic model, we assume an exemplary surface-to-volume-ratio of the reservoir. For the sake of this simulation, we multiply the given rainfall by a factor of $4$, in order to appropriately replenish the reservoir. 
 
 \subsubsection{Modification 4: Taking Evaporation into Account} \label{sec:intro-mod4}
-The evaporation of water from a water reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}.
-It therefore should definitely be considered in a real model that is used to determine the optimal irrigation strategy.
+The evaporation of water from a reservoir is the most important natural "outflow" to be considered when it comes to managing water levels \citep{tanny2008evaporation}. 
+To determine a more realistic optimal irrigation strategy, we should therefore consider evaporation effects in our model. 
 The dataset that we use for the real rainfall also contains many other weather parameters.
-With the mean temperature $T$, the elevation $h$, the latitude $A$ and the dew point $T_d$ we calculate an estimate for evaporation of water in mm per day for that specific location, using the formula \citep{linacre1977simple}
+The dataset from \citep{kaggle:2019} does not contain evaporation information directly. However, with the mean temperature $T$ in °C, the elevation $h$ in m, the latitude $A$ in °S and the dew point $T_d$ in °C we can calculate an estimate for the evaporation of water in mm per day for a specific location, using the formula \citep{linacre1977simple}
 
 \begin{equation}
 	{E_0} = \frac{700 * (T + 0.006h) / (100 - A) + 15 * (T - T_d)}{(80 - T)}
@@ -232,10 +231,10 @@ The average dew point $T_d$ can be estimated by
 	{T_d} = T - (\frac{100 - RH}{5})
 \end{equation}
 
-where RH is the average relative humidity of the year in percent \citep{lawrence2005relationship}.\\\\
+where $RH$ is the average relative humidity of the year in percent \citep{lawrence2005relationship}.\\\\
 
-
-Note that all modifications, except Modification 4, are based on the original model without any modifications.
+%TODO sind diese beiden Sätze so schön? oder nötig?
+Note that all modifications, except Modification 4, are based on the original model without any modifications. 
 Modification 4 is an extension of Modification 3. 
 
 	%------------------------------------------------
@@ -349,20 +348,21 @@ The discussion will be started on the basic questions asked by the project descr
 Furthermore we made several modifications to the task which will be discussed additionally.
 All results will be visualized by plots made within our simulation in MATLAB.
 \subsection{Optimal irrigation policy}
-When questioning what the optimal irrigation policy is, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like.
-The value function as posed in \ref{eq:value-function} contains the maximum possible usage that can be gained by irrigating a specific amount of water under a given water level. 
-Figure \origref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of 0 and 7. 
+When examining what an optimal irrigation policy could be, the first question to be asked is how the aggregated value function of both recreational users and farmers looks like. 
+The value function as posed in \ref{eq:value-function} contains the maximum possible (expected) utility that can be gained by irrigating a certain amount of water under a given water level in the reservoir. 
+Figure \origref{fig:value-function} shows the value function calculated for all possible water levels between the allowed boundaries of $0$ and $7$. 
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/value_function.eps}
 	\caption{Value Function}
 	\label{fig:value-function}
 \end{figure}
 \newline
-Every value along the possible water levels is mapped to an irrigation amount that optimizes the value for all parties in the given situation. Summarizing these values over the range of possible water levels results in a optimal irrigation policy which is shown in \ref{fig:optimal-irrigation-policy}.
-The plot shows a rising proposed irrigation amount with rising water level. There are 2 particularities that can be found within the graph:
+Every value along the possible water levels is mapped to an irrigation amount that optimizes the expected value for all parties in the given situation. 
+The resulting optimal irrigation policy is shown in \ref{fig:optimal-irrigation-policy}. 
+As the plot shows, a higher water level leads to a higher proposed irrigation amount. There are two particularities that can be found within the graph:
 \begin{itemize}
-	\item Due to the effect that a almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
-	\item As long as the discount factor $\beta$ is larger than 0, the water within the reservoir has a value in the next period for both recreational users and farmers. Due to this effect, saving waters makes sense and leads to a decreasing gradient for the proposed irrigation amount with increasing water level.
+	\item Due to the effect that an almost empty reservoir has a very low use to recreational users, the optimal irrigation strategy suggests a very low irrigation amount whose gradient increases with increasing water level.
+	\item As long as the discount factor $\beta$ is greater than $0$, the water within the reservoir has a value in the next period for both recreational users and farmers. Due to this effect, saving waters makes sense and leads to a decreasing gradient for the proposed irrigation amount with increasing water level.
 \end{itemize}
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/OptimalIrrigationPolicy.eps}
@@ -373,49 +373,58 @@ The plot shows a rising proposed irrigation amount with rising water level. Ther
 \subsection{Steady State}
 In systems theory, a system or a process is in a steady state, if the variables which define the behavior of the system are unchanging in time \citep{gagniuc2017markov}. 
 The variable defining the behavior of our system is the water level. 
-Because of this, we have to calculate the difference in water level for each period. 
-Due to the fact, that our water level highly depends on the randomly distributed rainfalls that fill the reservoir at end of each period, it is not possible to find a steady state in which the water level does not change at all. 
-To analyze it nevertheless, we defined our steady state, to be a state, where the mean water level of the last 200 periods did not change more than $1*10^{-7}$ from a period to the next.
+Thus, we have to calculate the change in water level for each period. 
+Due to the fact that the water level highly depends on the randomly distributed rainfalls (that fill the reservoir at end of each period), it is not possible to find a steady state in which the water level does not change \textit{at all}. 
+In this context, we define a steady state to be a state, where the mean water level of the last 200 periods does not change more than $1*10^{-7}$ from one period to the next. %TODO ist dieser Wert noch richtig? Im Code steht im Moment steadyStateTolerance = 0.0001;
 A exemplary graph of the mean in every period and the difference to its predecessor is shown in \ref{fig:steadyState}.
-Once a period is found, where the mean does not change more than the given value, the mean of that period is defined as steady state water level.
-The water level found to be a steady state and the period in which this condition occurs changes from calculation to calculation due to the fact, that the rainfall is still a random distribution.
+Once a period is found where the mean does not change more than the given tolerance, the mean of that period is defined as the steady state of the water level. %TODO hier "moving average" schreiben?
+The water level found to be a steady state and the period in which this condition occurs changes from one simulation to the next, since the rainfall is generated randomly following the given distribution.
+
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/steadyState.eps}
 	\caption{Exemplary Calculation of the Steady State}
 	\label{fig:steadyState}
 \end{figure}
+
 \subsection{Steady State Probability}
-As mentioned above, the steady state changes from simulation to simulation.
-In order to find out, how the steady states are distributed and what the probability of their occurrences are, we did a Monte Carlo simulation.
-To do so, we ran our code 1000 times (in specific, the forward simulation) and put the resulting water levels into bins with the size of 0.1 each. 
+As just mentioned, the steady state changes from simulation to simulation. 
+In order to find out how the steady states are distributed and what the probability of their occurrences are, we implement a Monte Carlo simulation. 
+To do so, we evaluate the forward simulation 1000 times and put the resulting water levels into bins with the size of 0.1 each. 
 We then counted the occurrences, normalized them and calculated the corresponding probability.
 The result is put in a histogram and shown in \ref{fig:steadyStateMonteCarlo}.
+ %TODO ich (martin) würde vorschlagen, einfach zu schreiben ... "1000 times and calculate a relative frequency distribution" (ist hier erklärt: https://www.sciencedirect.com/topics/mathematics/relative-frequency-distribution)
 The highest possibility for a steady state is around 4.2. 
-The curve resembles a normal distribution with a standard deviation of $\sigma=0.37$.
+The curve resembles a normal distribution with a standard deviation of $\sigma=0.37$ and peaks at a water level around $4.2$.
 
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/steadyStateMonteCarlo.eps}
 	\caption{Steady State Probability}
 	\label{fig:steadyStateMonteCarlo}
 \end{figure}
-\subsection{Effect of Changed Discount Factors to Optimal Irrigation Policy}
-When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes.
-Looking at small water levels within the reservoir the optimal irrigation amount does not change much depending on the discount factor.
+
+\subsection{Effect of the Discount Factor on the Optimal Irrigation Policy}
+When altering the discount factor $\beta$ in a range from 0 to 1, the optimal irrigation policy changes. %TODO auch hier die tatsächlichen Werte anpassen?!
+For small water levels of the reservoir, the optimal irrigation amount is rather insensitive to the discount factor. 
 A small $\beta$ ensures that high water levels at the end of one period are only available to a small extent in the next period. 
-%TODO Finde die Formulierung nicht so gut: Sie sind ja weiterhin voll verfügbar, aber eben in Zukunft weniger wert. Bzw das könnte man diskutieren.
-This leads to a increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much.
+%TODO Finde die Formulierung nicht so gut: Sie sind ja weiterhin voll verfügbar, aber eben in Zukunft weniger wert. Bzw das könnte man diskutieren. 
+This leads to an increasing gap between irrigation amounts over $\beta$ with increasing water level since conserving water does not increase the usage as much. 
 One can say that a high $\beta$ prefers a long-term policy while a smaller $\beta$ leads to a rather short-term policy.
+%TODO ich (martin) würde diesen absatz so schreiben "A smaller $\beta$ allows more water to be used for irrigation today, optimizing the short-term utility. On the other hand, a higher $\beta$ increases the today's valuation of future utility, and therefore reduces the amount of water to be consumed (irrigated) today. "
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/optimum-policy-over-beta.eps}
 	\caption{Optimal irrigation policy as a function of the discount factor $\beta$}
 	\label{fig:optimal-irrigation-beta}
 \end{figure}
 \newpage
-\subsection{Changed Volatility of Rainfalls}
-A more volatile rainfall means a rainfall having a higher standard deviation.
-Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
-Using a $\sigma^2=2$ includes setting $\mu=-1.5$ in order for the mean to stay the same.
-(See \ref{eq:rainfall} for reference) 
+\subsection{Increased Volatility of the Rainfalls} %TODO überall use durch utility ersetzen!
+More volatile rainfalls means that rainfalls are having a higher standard deviation.
+Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed. 
+Originally, we assumed $\mu=0$ and $\sigma=1$. Now, we choose $\sigma=2$ and thus have to set $\mu=-1.5$, in order to retain the same mean (see \ref{eq:rainfall}). %TODO ich (martin) hab diesen Absatz so umgeschrieben, einverstanden? Vorher stand hier insbesondere auch (fälschlicherweise?!) $\sigma^2=2$: 
+%Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed.
+%Using a $\sigma^2=2$ includes setting $\mu=-1.5$ in order for the mean to stay the same.
+%(See \ref{eq:rainfall} for reference) 
+
+
 \begin{equation}
 	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
 \end{equation} 
@@ -433,7 +442,7 @@ Both distributions are visualized in \ref{fig:rain-distributions}.
 		\caption{$\mu=-1.5, \sigma=2$}
 		\label{fig:rainfall-changed}
 	\end{subfigure}
-	\caption{Different Rain Distributions}
+	\caption{Different Rainfall Distributions}
 	\label{fig:rain-distributions}
 \end{figure}
 \newpage
@@ -447,16 +456,19 @@ Both distributions are visualized in \ref{fig:rain-distributions}.
 \caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma=2)$}
 \label{fig:aggregated-use-rainfall-more-volatile}
 \end{figure}
-\ref{fig:aggregated-use-rainfall-default} shows the aggregated use of a lognormal distributed rainfall including the water level, the amount of water used for irrigation in the rain exemplary for 100 periods. \ref{fig:aggregated-use-rainfall-more-volatile} does the same for a changed lognormal distribution parameterized with $\mu=-1.5$ and $\sigma=2$.
-When comparing both visualizations, it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
-As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
-In such periods the farmers use almost no water for irrigation.
-The aggregated use of farmers and recreational users drops significantly.
-Since the reservoir is capped at a amount of 7, the high peaks of rainfall can not be used to a large extent to fill up the reservoir.
+
+The following figures demonstrate the effect of the changed volatility. They show the lognormal rainfalls with the original volatility (\ref{fig:aggregated-use-rainfall-default}), and with the increased volatility (\ref{fig:aggregated-use-rainfall-more-volatile}) over 100 periods. 
+When comparing both visualizations, we see that more extreme rainfalls significantly affect the water level of the reservoir: there longer periods with a rather low amount of water in the reservoir, but some periods where the reservoir reaches it's capacity limit. 
+%When comparing both visualizations,it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
+%As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
+In the periods with only low precipitation, the farmers use almost no water for irrigation. 
+The aggregated utility of farmers and recreational users drops significantly. 
+Since the reservoir is capped at an amount of 7, the high peaks of the rainfalls can only partially be used in following (potentially dryer) periods. 
 Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
-This effect is reflected in the aggregated use as well. 
-The use of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$.
-Since the mean stays constant within the analyzed comparison, the value function does not change.
+This effect is reflected in the aggregated utility as well. 
+The utility of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$. 
+Since the mean stays the same in the two cases considered, the value function does not change. 
+
 \clearpage
 \subsection{Using Real Data for Rainfall}
 Figure \origref{fig:rainfall-real-data} shows the distribution of rain from a real data set.
