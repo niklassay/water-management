@@ -469,6 +469,8 @@ Since there are only 65 periods within the real data set is not as well distribu
 	\caption{Optimal Irrigation Policy with Real Data}
 	\label{fig:optimalIrrigationPolicy-real-data}
 \end{subfigure}
+\caption{Using Real Data for Rainfall}
+\label{fig:real-data}
 \end{figure}
 In the real data set there are no periods with (almost) no rain while in our simulation there are.
 As we can learn from our dataset this assumption is not realistic.
@@ -494,13 +496,13 @@ When taking evaporation into account, the reservoir never reaches its capacity l
 	\centering
 	\includegraphics[width=1\textwidth]{figures/results-opt-irrigation-over-time-evap-inactive.eps}
 	\caption{Without Evaporation}
-	\label{fig:rainfall-real-data}
+	\label{fig:water-level-wo-evap}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/results-opt-irrigation-over-time-evap-active.eps}
 	\caption{With Evaporation}
-	\label{fig:value-function}
+	\label{fig:total-utility-wo-evap}
 \end{subfigure}
 \caption{Comparison of water level, irrigation amount, rainfall and evaporation over time using real data}
 \label{fig:without-vs-with-evaporation}
@@ -515,13 +517,13 @@ In the introduction, we stated that due to climate change, prolonged dry periods
 	\centering
 	\includegraphics[width=1\textwidth]{figures/results-evap-factors-water-levels.eps}
 	\caption{Water Level}
-	\label{fig:rainfall-real-data}
+	\label{fig:water-level-evap}
 \end{subfigure}%
 \begin{subfigure}{.5\textwidth}
 	\centering
 	\includegraphics[width=1\textwidth]{figures/results-evap-factors-utilities.eps}
 	\caption{Total Utility}
-	\label{fig:value-function}
+	\label{fig:total-utility-evap}
 \end{subfigure}
 \caption{Water level and log-scaled total utility over time, scaling evaporation with factors $0, 1, 2, 2.3$ (from top to bottom)}
 \label{fig:evaporation-factors}
@@ -588,9 +590,9 @@ We could see that with rainfalls getting more volatile the sum of aggregated use
 This vividly illustrates a very real consequence of climate change that governments and counties might face in the future.
 \\
 Instead of simulated rainfall, we also used real weather data from Barisal, Bangladesh. 
-The real rainfall distribution (Figure 11 a) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma=1$.
+The real rainfall distribution (\ref{fig:rainfall-real-data}) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma=1$.
 This indicates that other parameters will have to be found to better describe the annual rainfall in that specific area.
-The higher expected value of rain in the real distribution leads to the optimal irrigation policy showing a higher amount of water used for irrigation at higher water levels (Figure 11 b).
+The higher expected value of rain in the real distribution leads to the optimal irrigation policy showing a higher amount of water used for irrigation at higher water levels (\ref{fig:optimalIrrigationPolicy-real-data}).
 Further adding evaporation to the model shows...
 %Evap
 % Efficiency loss with higher evap scale factor -> same as more volatile rainfalls
