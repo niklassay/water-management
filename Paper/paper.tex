@@ -584,7 +584,7 @@ As expected, a high $\beta$ leads to less irrigation at high water levels.
 That's because citizens might be able to benefit from the remaining water again in future periods, while when using water for irrigation farmers can only benefit once in the present period.
 Increasing $\beta$ means putting more weight on future utility up to a factor of $\beta = 1$, where stakeholders are indifferent between current and future utility.
 A low $\beta$ on the other hand leads to a higher amount of water used for irrigation, especially at higher water levels. 
-This can be easily imagined with the extreme case $\beta = 0$, which means that no one benefits from leaving water in the reservoir for the next period.
+This can be easily imagined with the extreme case of $\beta = 0$, which means that no one benefits from leaving water in the reservoir for the next period.
 Of course there is still water that's being left in the reservoir, but that is only to benefit citizens in the current period and not because of the benefits of the remaining water for the next period.
 In this case the model is reduced to a single-stage optimization problem with no uncertainty, where the only task is the optimal allocation of the given current amount of water on the basis of the stakeholders' utility functions.
 \\
@@ -592,19 +592,30 @@ We then went on and looked at the effect of increased rainfall volatility (\ref{
 Because of the constant mean, the total amount of rain and therefore of water influx in the reservoir stays the same.
 The result is a lower average water level in the reservoir.
 The aggregated use is a good indicator of the efficiency our allocation strategy is achieving.
-We could see that with rainfalls getting more volatile the sum of aggregated use over all simulated periods drops significantly, due to efficiency losses caused by increased likelihood of reservoir overflow and drought. % Evlt noch schnell ausrechnen?
+We could see that with rainfalls getting more volatile the sum of aggregated use over all simulated periods drops significantly, due to utility losses caused by increased likelihood of reservoir overflow and drought.
 This vividly illustrates a very real consequence of climate change that governments and counties might face in the future.
 \\
 Instead of simulated rainfall, we also used real weather data from Barisal, Bangladesh. 
 The real rainfall distribution (\ref{fig:rainfall-real-data}) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma=1$.
 This indicates that other parameters will have to be found to better describe the annual rainfall in that specific area.
 The higher expected value of rain in the real distribution leads to the optimal irrigation policy showing a higher amount of water used for irrigation at higher water levels (\ref{fig:optimalIrrigationPolicy-real-data}).
-Further adding evaporation to the model shows...
-%Evap
-% Efficiency loss with higher evap scale factor -> same as more volatile rainfalls
+Further adding evaporation to the model lowers the average amount of water in the reservoir and therefore also the average amount of water used for irrigation and the sum of utility the optimal irrigation strategy gives us (\ref{fig:total-utility-evap}).
+In the scenario with the highest scale factor for evaporation the reservoir runs completely dry in multiple periods, which leads to a utility of negative infinity in all of those periods.
+This could be sensible in a scenario of an isolated village, where the survival of villagers completely depends on the local farmers' food production.
+In this case our model would predict a famine, which under all circumstances has to be prevented.
+An option would be to supply the village from the outside and assign a value to using this option to respect it in the model.
+The value should somehow correlate to the effort this would take.
+\\
+Summing up, we created a basic model of a water allocation problem that can be solved to optimality by using dynamic programming and can thereby support decisionmakers for the allocation of limited water resources.
+The model can work with random distributions and with real datasets and could of course also work with random distributions fitted to real datasets.
+To get more satisfactory recommendations from the model additional parameters and/or policies could be introduced.
+For example it would make sense to consider the temperature during the summer months when it comes to determine the utility citizens get from recreational water use.
+An additional policy that might be worth considering in the context could be food supply from external sources, as suggested above.
+\\
+As we learned from our research, the discount factor plays a big role when it comes to finding the optimal irrigation strategy.
+A whole different problem, more of an empirical nature however, would therefore be the determination of the "correct" discount factor, whatever that may be.
+This is a different area of research and a lot of publications are dedicated to this topic but further advancements could greatly strengthen the theoretical foundation of our model.
 
-% Ausblick
-% Whole different problem, more of empirical nature: What even is the "right" discount factor in this context
 
 \clearpage
 \printbibliography
