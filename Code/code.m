@@ -104,7 +104,7 @@ if (useRealData)
 
     % Note that because of the weather conditions of the location chosen in 
     % bangladesh, the amount of rainfall is not high enough to provide a
-    % significant amount of value through irrigatio for the farmers. For 
+    % significant amount of value through irrigation for the farmers. For 
     % this demo however, we want the reservoir to be refilled in order to 
     % give the farmers at least some utility. Thus we will
     % artificially increase the amount of rainfall here. 
