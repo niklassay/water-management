@@ -145,7 +145,7 @@ Therefore, the optimal allocation and sustainable use of the available water wil
 
 In this work, we want to examine the variations in use of water from a (hypothetical) water reservoir.
 One of the most important uses of surface water is the irrigation of fields for food production. However, as farming and food production are private enterprises and lakes are public goods, interests of different parties have to be considered. 
-The water reservoir to be considered has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities. 
+The water reservoir we're modeling has two stakeholders: farmers, who want to use the water for irrigation purposes and citizens, who want to use the lake for recreational activities. 
 Though looking at just two agents is a vast simplification compared to real allocation problems, one can easily add more stakeholders to the model, as long as there is enough computational power.
 The sequence of events for every period is displayed in \ref{fig:Sequence}.
 At the beginning of every year (Step 1) we have to decide how much of the water from the reservoir is used for the irrigation of fields, which benefits the farmers' harvest.\\\\
@@ -205,8 +205,8 @@ It expresses how much one unit of future utility is worth in terms of current ut
 We take a look at the discount factors from 0.05 to 0.95. 
 
 \subsubsection{Modification 2: Increasing the Volatility of Rainfalls}
-In order to take into account expected future impacts of climate change \citep{guhathakurta2011impact}, we consider the effects of increased volatility
-We do so by setting $\sigma=2$ and $\mu=-1.5$. 
+In order to take into account expected future impacts of climate change \citep{guhathakurta2011impact}, we consider the effects of increased volatility.
+We do so by changing the parameters of the lognormal distribution of the rainfall to $\sigma^2=4$ and $\mu=-1.5$.
 
 \subsubsection{Modification 3: Using Real Data for Rainfalls}
 Instead of simulating the rainfall with randomly generated numbers, we want to use real data. 
@@ -273,7 +273,7 @@ where the weights $w_i$ are given as the solution to a linear system of equation
 \subsubsection{Dynamic Programming}
 
 A common technique to solve optimization or combinatorial problems is called Dynamic Programming. 
-It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). % Nicht eher "memoRization"?
+It is based on the idea of dividing problems into smaller subproblems, solving these recursively and caching intermediate results (\textit{memoization}). % TODO Nicht eher "memoRization"?
 In his paper "The Theory Of Dynamic Programming" from 1957, Richard Bellman aimed to provide a solution to multi-stage-decision processes. 
 % TODO unbedingt noch Bellman als Quelle hinzufügen!!!
 He defines a \textit{policy} as "a sequence of decisions" (\cite{bellman:1957}, p.2), and an \textit{optimal policy} as "a policy, which is most advantageous according to some preassigned criterion" (\cite{bellman:1957}, p.2). 
@@ -291,7 +291,6 @@ V(s) = \max_{x}(u(s,x) + \beta*V'(s')))
 where $u(s,x)$ is the utility to gain from the control variable (action) $x$ in state $s$ \citep{seminar:week3}. 
 
 So the value of the control variable to be set is the one that maximizes both the utility of the current state plus (recursively) the value $V$ of the next state $s'$ which is discounted by a factor of $\beta$. 
-%TODO hier noch auf die Definition von beta eingehen? Was ist beta und warum ist das relevant?
 \subsection{Implementation}
 %TODO theoretisch ist es sehr unschön ein Kapitel ohne Text aufzumachen. Ist aber nur Makulatur
 \subsubsection{Computation of the value function}
@@ -413,8 +412,8 @@ A smaller $\beta$ allows more water to be used for irrigation today, optimizing 
 \newpage
 \subsection{Increased Volatility of the Rainfalls} 
 More volatile rainfalls means that rainfalls are having a higher standard deviation.
-Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed. 
-Originally, we assumed $\mu=0$ and $\sigma=1$. Now, we choose $\sigma=2$ and thus have to set $\mu=-1.5$, in order to retain the same mean (see \ref{eq:rainfall}).
+Since we want to compare two rainfall distributions of the same mean, the median of the distribution has to be changed. % TODO: Das macht für mich nicht so ganz Sinn; entweder: "parameter mu has to also be changed..." oder "mean of the underlying normally distributed variable has to be changed"
+Originally, we assumed $\mu=0$ and $\sigma^2=1$. Now, we choose $\sigma^2=4$ and thus have to set $\mu=-1.5$, in order to retain the same mean (see \ref{eq:rainfall}).
 
 \begin{equation}
 	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
@@ -424,13 +423,13 @@ Both distributions are visualized in \ref{fig:rain-distributions}.
 	\begin{subfigure}{0.5\textwidth}
 		\centering
 		\includegraphics[width=1\textwidth]{figures/rainfall-default.eps}
-		\caption{$\mu=0, \sigma=1$}
+		\caption{$\mu=0, \sigma^2=1$}
 		\label{fig:rainfall-default}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
 		\includegraphics[width=1\textwidth]{figures/rainfall-more-volatile.eps}
-		\caption{$\mu=-1.5, \sigma=2$}
+		\caption{$\mu=-1.5, \sigma^2=4$}
 		\label{fig:rainfall-changed}
 	\end{subfigure}
 	\caption{Different Rainfall Distributions}
@@ -439,17 +438,17 @@ Both distributions are visualized in \ref{fig:rain-distributions}.
 \newpage
 \begin{figure}[ht]
 	\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-default.eps}
-	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma=1)$}
+	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma^2=1)$}
 	\label{fig:aggregated-use-rainfall-default}
 \end{figure}
 \begin{figure}[ht]
 \includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-more-volatile.eps}
-\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma=2)$}
+\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma^2=4)$}
 \label{fig:aggregated-use-rainfall-more-volatile}
 \end{figure}
 
 The following figures demonstrate the effect of the changed volatility. They show the lognormal rainfalls with the original volatility (\ref{fig:aggregated-use-rainfall-default}), and with the increased volatility (\ref{fig:aggregated-use-rainfall-more-volatile}) over 100 periods. 
-When comparing both visualizations, we see that more extreme rainfalls significantly affect the water level of the reservoir: there longer periods with a rather low amount of water in the reservoir, but some periods where the reservoir reaches it's capacity limit. 
+When comparing both visualizations, we see that more extreme rainfalls significantly affect the water level of the reservoir: there are longer periods with a rather low amount of water in the reservoir, but some periods where the reservoir reaches it's capacity limit. 
 %When comparing both visualizations,it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
 %As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
 In the periods with only low precipitation, the farmers use almost no water for irrigation. 
@@ -457,7 +456,7 @@ The aggregated utility of farmers and recreational users drops significantly.
 Since the reservoir is capped at an amount of 7, the high peaks of the rainfalls can only partially be used in following (potentially dryer) periods. 
 Generally speaking, one can say that a more volatile rain distribution leads to a lower average water level in the reservoir with lower amounts of water to be used for irrigation.
 This effect is reflected in the aggregated utility as well. 
-The utility of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma=1$. 
+The utility of more volatile rainfall is much lower compared to rainfall parameterized with $\mu=0$ and $\sigma^2=1$. 
 Since the mean stays the same in the two cases considered, the value function does not change. 
 
 \clearpage
@@ -575,8 +574,8 @@ In this work we developed an optimal irrigation strategy for an hypothetical wat
 Using dynamic programming we calculated an aggregated value function based on the given utility functions as described in chapter 2.4.
 We applied this value function to a basic model of the water reservoir, by extracting the optimal irrigation path from the value function and simulating water influx in the form of rainfall with a lognormally distributed random variable.
 The optimal irrigation policy stipulates quite low irrigation amounts for low water levels, mostly due to the very negative utility citizens receive from an almost empty reservoir (Figure 4).
-With $\beta = 0.9$, the optimal irrigation amount tapers off again at the end, due to % TODO: Besprechen! MMn wegen Möglichkeit des Mehrfachnutzens bei Non-irrigation (daher nicht erkennbar bei beta = 0)
-In figure 9 you can see one possible scenario in our basic setting with $\mu=0$ and $\sigma=1$.
+With $\beta = 0.9$, the optimal irrigation amount tapers off again at the end, due to the potential of benefitting from the remaining water again in the future (see next paragraph).
+In figure 9 you can see one possible scenario in our basic setting with $\mu=0$ and $\sigma^2=1$.
 However, due to the random variable, every forward simulation can look quite different, even though no parameters are changed.
 Therefore, the steady state of the water level itself, defined as the moving average of 200 periods (see chapter 3.2), is uncertain.
 Running our forward simulation 500 times, we could see that it seems to follow a normal distribution with a mean of around 4.2 and a standard deviation of 0.37.
@@ -584,7 +583,8 @@ Running our forward simulation 500 times, we could see that it seems to follow a
 We also looked at how changes in the discount factor $\beta$ influenced the optimal irrigation policy (\ref{fig:optimal-irrigation-beta}).
 As expected, a high $\beta$ leads to less irrigation at high water levels.
 That's because citizens might be able to benefit from the remaining water again in future periods, while when using water for irrigation farmers can only benefit once in the present period.
-Increasing $\beta$ means putting more weight on future utility up to a factor of $\beta = 1$, where stakeholders are indifferent between current and future utility.
+Increasing $\beta$ means putting more weight on future utility in relation to current utility.
+For example with a factor of $\beta = 1$, stakeholders are indifferent between current and future utility.
 A low $\beta$ on the other hand leads to a higher amount of water used for irrigation, especially at higher water levels. 
 This can be easily imagined with the extreme case of $\beta = 0$, which means that no one benefits from leaving water in the reservoir for the next period.
 Of course there is still water that's being left in the reservoir, but that is only to benefit citizens in the current period and not because of the benefits of the remaining water for the next period.
@@ -598,7 +598,7 @@ We could see that with rainfalls getting more volatile the sum of aggregated use
 This vividly illustrates a very real consequence of climate change that governments and counties might face in the future.
 \\
 Instead of simulated rainfall, we also used real weather data from Barisal, Bangladesh. 
-The real rainfall distribution (\ref{fig:rainfall-real-data}) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma=1$.
+The real rainfall distribution (\ref{fig:rainfall-real-data}) looked quite a bit different then our lognormal distribution with $\mu=0$ and $\sigma^2=1$.
 This indicates that other parameters will have to be found to better describe the annual rainfall in that specific area.
 The higher expected value of rain in the real distribution leads to the optimal irrigation policy showing a higher amount of water used for irrigation at higher water levels (\ref{fig:optimalIrrigationPolicy-real-data}).
 Further adding evaporation to the model lowers the average amount of water in the reservoir and therefore also the average amount of water used for irrigation and the sum of utility the optimal irrigation strategy gives us (\ref{fig:total-utility-evap}).
@@ -615,9 +615,9 @@ For example it would make sense to consider the temperature during the summer mo
 An additional policy that might be worth considering in the context could be food supply from external sources, as suggested above.
 \\
 As we learned from our research, the discount factor plays a big role when it comes to finding the optimal irrigation strategy.
-A whole different problem, more of an empirical nature however, would therefore be the determination of the "correct" discount factor, whatever that may be.
-% TODO "whatever that may be" klingt echt merkwürdig
-This is a different area of research and a lot of publications are dedicated to this topic but further advancements could greatly strengthen the theoretical foundation of our model.
+A whole different problem would therefore be the determination of the "correct" discount factor.
+This is a different area of research and a lot of publications are dedicated to this topic. % TODO Quellen hinzufügen!
+Still, further advancements could greatly strengthen the theoretical foundation of our model.
 
 
 \clearpage
