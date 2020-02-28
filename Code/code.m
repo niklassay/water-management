@@ -421,30 +421,30 @@ else
     ylabel('Irrigation Amount')
     hold off
 
-    % Plot the aggregated use for farmers and recreational users
+    % Plot the aggregated utility for farmers and recreational users
     figure(10)
     hold on
     set(gca,'FontSize',12)
     set(gcf,'Units','Centimeters','position',[0,0,16,8]);
-    %title('Aggreated Use for Farmers and Recreational Users');
+    %title('Aggreated Utility for Farmers and Recreational Users');
     yyaxis left;
-    plot(utilRec(waterLevel(waterInd(:, 1:T)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd)),'color','#A2142F');
-    ylabel('Use');
+    plot(utilRec(waterLevel(waterInd(:, 1:T)), waterLevel(irrigationInd)) + utilFar(waterLevel(irrigationInd)), ...
+         'color','#A2142F');
+    ylabel('Utility');
     ylim([-100 0]);
     yyaxis right;
-    plot(waterLevel(waterInd),'-', 'color', '#0072BD');
-    plot(waterLevel(irrigationInd),'-','color','#D95319');
-    plot(r,'-','color','#EDB120');
+    plot(waterLevel(waterInd), '-', 'color', '#0072BD');
+    plot(waterLevel(irrigationInd),'-','color', '#D95319');
+    plot(r, '-', 'color', '#EDB120');
     ylabel('Amount');
     ylim([0 10]);
-    legend('Aggregated Use','Water Level of the Reservoir','Water used for Irrigation',...
-    'Rain');
+    legend('Aggregated Utility', 'Water Level of the Reservoir', 'Water used for Irrigation', 'Rain');
     xlim([1 100]);
     xlabel('Period');
     hold off
-
+    
     figure(11)
-    set(gcf,'Units','Centimeters','position',[0,0,8,8]);
+    set(gcf, 'Units', 'Centimeters', 'position', [0,0,8,8]);
     edges = [0:0.05:7];
     hold on
     histogram(r, edges, 'Normalization', 'Probability')
@@ -456,13 +456,14 @@ end
 
 
 %% Computation of the Value Function
-function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, dimE_Rain, ...
-                                                dimE_Evap, utilFar, utilRec, beta, valueFunctionTolerance)
+function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueFunctionMaxIter, waterLevel, ...
+                                                                   dimE_Rain, dimE_Evap, utilFar, utilRec, beta, ...
+                                                                   valueFunctionTolerance)
 
     % Create a value function for the combined value of farmers and
     % recreational users for each water level, respecting the discounted value
     % for the next period and the expected rainfall and evaporation
-    V = zeros(dimWL,1);
+    V = zeros(dimWL, 1);
 
     tic
     for j = 1:valueFunctionMaxIter
@@ -478,11 +479,11 @@ function [V, optIrrigation_ind, aux_farm, aux_rec] = ValueFunction(dimWL, valueF
         aux_rec = zeros(dimWL, dimWL) + NaN;
         for iWL = 1:dimWL
             for iIrrigation = 1:iWL
-                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) + utilRec(waterLevel(iWL), waterLevel(iIrrigation)) ...
-                    + beta*V_old(min(max(iWL-iIrrigation +1+dimE_Rain-dimE_Evap,1),dimWL));
+                aux(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation)) + utilRec(waterLevel(iWL), ...
+                    waterLevel(iIrrigation)) + beta*V_old(min(max(iWL-iIrrigation+1+dimE_Rain-dimE_Evap,1), dimWL));
                 % Generate aux_farm and aux_rec for plotting in a later 
                 % step 
-                aux_farm(iWL, iIrrigation) = utilFar(waterLevel( iIrrigation));
+                aux_farm(iWL, iIrrigation) = utilFar(waterLevel(iIrrigation));
                 aux_rec(iWL, iIrrigation) = utilRec(waterLevel(iWL), waterLevel(iIrrigation));
             end
         end
