@@ -418,7 +418,9 @@ Originally, we assumed $\mu=0$ and $\sigma^2=1$. Now, we choose $\sigma^2=4$ and
 \begin{equation}
 	mean = exp(\mu+\frac{\sigma^2}{2}) \label{eq:rainfall}
 \end{equation} 
+
 Both distributions are visualized in \ref{fig:rain-distributions}.
+
 \begin{figure}
 	\begin{subfigure}{0.5\textwidth}
 		\centering
@@ -435,20 +437,43 @@ Both distributions are visualized in \ref{fig:rain-distributions}.
 	\caption{Different Rainfall Distributions}
 	\label{fig:rain-distributions}
 \end{figure}
+
 \newpage
+
+
+
+
+%TODO in figure+code use durch utility ersetzen
 \begin{figure}[ht]
-	\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-default.eps}
-	\caption{Aggregated Use for lognormal distributed rainfall $(\mu=0, \sigma^2=1)$}
-	\label{fig:aggregated-use-rainfall-default}
-\end{figure}
-\begin{figure}[ht]
-\includegraphics[width=1\textwidth]{figures/aggregated-use-rainfall-more-volatile.eps}
-\caption{Aggregated Use for lognormal distributed rainfall $(\mu=-1.5, \sigma^2=4)$}
-\label{fig:aggregated-use-rainfall-more-volatile}
+	\begin{subfigure}{\textwidth}
+
+	\includegraphics[width=1\textwidth]{figures/aggregated-utility-rainfall-default.eps}
+	\caption{Lognormal distributed Rainfalls with $\mu=0$ and $\sigma=1$}
+	\label{fig:aggregated-utility-rainfall-default}
+
+	\end{subfigure}
+	\newline
+	\begin{subfigure}{\textwidth}
+
+	\includegraphics[width=1\textwidth]{figures/aggregated-utility-rainfall-more-volatile.eps}
+	\caption{Lognormal distributed Rainfalls with $\mu=-1.5$ and $\sigma=2$}
+	\label{fig:aggregated-utility-rainfall-more-volatile}
+
+	\end{subfigure}
+	\caption{Effects of more volatile Rainfalls over Time}
+	\label{fig:aggregated-utilities-rainfall}
 \end{figure}
 
-The following figures demonstrate the effect of the changed volatility. They show the lognormal rainfalls with the original volatility (\ref{fig:aggregated-use-rainfall-default}), and with the increased volatility (\ref{fig:aggregated-use-rainfall-more-volatile}) over 100 periods. 
-When comparing both visualizations, we see that more extreme rainfalls significantly affect the water level of the reservoir: there are longer periods with a rather low amount of water in the reservoir, but some periods where the reservoir reaches it's capacity limit. 
+
+
+
+
+
+
+
+
+The graphs in \ref{fig:aggregated-utilities-rainfall} demonstrate the effect of the changed volatility. They compare the lognormal rainfalls with the original volatility, and with the increased volatility over 100 periods. 
+When comparing both visualizations, we see that more extreme rainfalls significantly affect the water level of the reservoir: there longer periods with a rather low amount of water in the reservoir, but some periods where the reservoir reaches it's capacity limit. 
 %When comparing both visualizations,it is noticeable that more volatile rainfall leads to much higher peaks of rain in combination with reduced number of periods with a decent amount of rain. 
 %As a consequence the water level in the reservoir fluctuates much more leading to periods with almost no water in the reservoir. 
 In the periods with only low precipitation, the farmers use almost no water for irrigation. 
